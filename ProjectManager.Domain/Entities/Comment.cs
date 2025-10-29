@@ -14,7 +14,7 @@ namespace ProjectManager.Domain.Entities
         public DateTime? UpdatedAt { get; set; }
         public int ProjectTaskId { get; set; }
         public ProjectTask ProjectTask { get; set; } = null!;
-        public int AuthorId { get; set; }
+        public Guid AuthorId { get; set; }
         public User Author { get; set; } = null!;
     }
 }

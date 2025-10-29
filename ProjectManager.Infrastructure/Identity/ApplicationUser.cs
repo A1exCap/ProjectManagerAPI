@@ -14,9 +14,11 @@ namespace ProjectManager.Infrastructure.Identity
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         public ICollection<Project> OwnedProjects { get; set; } = new List<Project>();
-        public ICollection<ProjectMember> ProjectMemberships { get; set; } = new List<ProjectMember>();
+        public ICollection<ProjectUser> ProjectUsers { get; set; } = new List<ProjectUser>();
         public ICollection<ProjectTask> AssignedTasks { get; set; } = new List<ProjectTask>();
+        public ICollection<ProjectDocument> UploadedDocuments { get; set; } = new List<ProjectDocument>();
         public ICollection<Comment> Comments { get; set; } = new List<Comment>();
         public ICollection<Notification> Notifications { get; set; } = new List<Notification>();
+        public ICollection<TaskAttachment> UploadedTaskAttachments { get; set; } = new List<TaskAttachment>();
     }
 }

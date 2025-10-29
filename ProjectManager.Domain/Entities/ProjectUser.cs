@@ -6,17 +6,18 @@ using System.Threading.Tasks;
 
 namespace ProjectManager.Domain.Entities
 {
-    public class ProjectMember
+    public class ProjectUser
     {
         public int Id { get; set; }
         public int ProjectId { get; set; }
         public Project Project { get; set; } = null!;
-        public int UserId { get; set; }
-        public ProjectMemberRole Role { get; set; } // Viewer, Contributor, Manager, Owner
+        public Guid UserId { get; set; }
+        public ProjectUserRole Role { get; set; } // Viewer, Contributor, Manager, Owner
         public DateTime JoinedAt { get; set; } = DateTime.UtcNow;
+        public decimal? HourlyRate { get; set; }
         public User User { get; set; } = null!;
     }
-    public enum ProjectMemberRole
+    public enum ProjectUserRole
     {
         Viewer,
         Contributor,

@@ -22,6 +22,8 @@ namespace ProjectManager.Infrastructure.Extensions
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionString));
 
+            services.AddDataProtection();
+
             services.AddIdentityCore<ApplicationUser>(options =>
             {
                 options.Password.RequiredLength = 6;

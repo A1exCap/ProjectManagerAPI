@@ -9,7 +9,7 @@ namespace ProjectManager.Domain.Entities
 {
     public class ProjectTask
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string Title { get; set; } = string.Empty;
         public string? Description { get; set; }
         public ProjectTaskPriority Priority { get; set; } 
@@ -22,7 +22,8 @@ namespace ProjectManager.Domain.Entities
 
         public int ProjectId { get; set; }
         public Project Project { get; set; } = null!;
-        public ICollection<User> Assignees { get; set; } = new List<User>();
+        public Guid AssigneeId { get; set; }
+        public User Assignee { get; set; } = null!;
         public ICollection<Comment> Comments { get; set; } = new List<Comment>();
         public ICollection<TaskAttachment> Attachments { get; set; } = new List<TaskAttachment>();
     }

@@ -18,11 +18,11 @@ namespace ProjectManager.Domain.Entities
         public string? ClientName { get; set; }
         public decimal? Budget { get; set; }
         public string? Technologies { get; set; } 
-        public int OwnerId { get; set; }
+        public Guid OwnerId { get; set; }
         public User Owner { get; set; } = null!;
 
         public ICollection<ProjectTask> Tasks { get; set; } = new List<ProjectTask>();
-        public ICollection<ProjectMember> Members { get; set; } = new List<ProjectMember>();
+        public ICollection<ProjectUser> ProjectUsers { get; set; } = new List<ProjectUser>();
         public ICollection<ProjectDocument> Documents { get; set; } = new List<ProjectDocument>();
     }
     public enum ProjectStatus
