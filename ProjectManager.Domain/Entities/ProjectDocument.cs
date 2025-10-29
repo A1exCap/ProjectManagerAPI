@@ -17,7 +17,7 @@ namespace ProjectManager.Domain.Entities
 
         public int ProjectId { get; set; }
         public Project Project { get; set; } = null!;
-        public Guid UploadedById { get; set; }
-        public User UploadedBy { get; set; } = null!;
+        public Guid? UploadedById { get; set; }
+        public User? UploadedBy { get; set; } 
     }
 }

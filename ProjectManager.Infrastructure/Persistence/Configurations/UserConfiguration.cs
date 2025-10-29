@@ -26,15 +26,15 @@ namespace ProjectManager.Infrastructure.Persistence.Configurations
             builder.Property(u => u.CreatedAt)
                 .IsRequired();
 
-            // Унікальний email
             builder.HasIndex(u => u.Email)
                 .IsUnique();
 
-            // Навігаційні властивості
+            builder.HasIndex(u => u.FullName);
+
             builder.HasMany(u => u.OwnedProjects)
                 .WithOne(p => p.Owner)
                 .HasForeignKey(p => p.OwnerId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.SetNull);
 
             builder.HasMany(u => u.ProjectUsers)
                 .WithOne(pu => pu.User)

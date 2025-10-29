@@ -45,12 +45,14 @@ namespace ProjectManager.Infrastructure.Persistence.Configurations
                .IsRequired()
                .HasDefaultValue(false);
 
+            builder.Property(n => n.RelatedEntityId)
+                .IsRequired();
+
             builder.Property(n => n.CreatedAt)
                 .IsRequired();
 
             builder.HasIndex(n => n.UserId);
             builder.HasIndex(n => new { n.UserId, n.IsRead });
-            builder.HasIndex(n => n.CreatedAt);
         }
     }
 }

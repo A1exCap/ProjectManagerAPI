@@ -15,6 +15,9 @@ namespace ProjectManager.Infrastructure.Persistence.Configurations
         {
             builder.HasKey(t => t.Id);
 
+            builder.Property(t => t.Id)
+              .ValueGeneratedOnAdd();
+
             builder.Property(t => t.Title)
                 .IsRequired()
                 .HasMaxLength(200);
@@ -55,7 +58,9 @@ namespace ProjectManager.Infrastructure.Persistence.Configurations
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne(t => t.Assignee)
-                .WithMany(u => u.AssignedTasks);
+                .WithMany(u => u.AssignedTasks)
+                .HasForeignKey(t=>t.AssigneeId)
+                .OnDelete(DeleteBehavior.Cascade);
             
             builder.HasMany(t => t.Comments)
                 .WithOne(c => c.ProjectTask)
@@ -67,8 +72,7 @@ namespace ProjectManager.Infrastructure.Persistence.Configurations
                 .HasForeignKey(a => a.ProjectTaskId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.HasIndex(t => t.Status);
-            builder.HasIndex(t => t.Priority);
+            builder.HasIndex(pu => new { pu.ProjectId, pu.Priority, pu.Status});
         }
     }
 }

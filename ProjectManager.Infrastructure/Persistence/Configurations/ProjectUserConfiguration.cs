@@ -32,6 +32,7 @@ namespace ProjectManager.Infrastructure.Persistence.Configurations
                 .IsRequired();
 
             builder.Property(pu => pu.HourlyRate)
+                .HasDefaultValue(0m)
                 .HasPrecision(18, 2);
 
             builder.HasOne(pu => pu.User)
