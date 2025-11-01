@@ -36,11 +36,6 @@ namespace ProjectManager.Infrastructure.Persistence.Configurations
             builder.Property(d => d.UploadedAt)
                 .IsRequired();
 
-            builder.HasOne(d => d.Project)
-                .WithMany(p => p.Documents)
-                .HasForeignKey(d => d.ProjectId)
-                .OnDelete(DeleteBehavior.Cascade);
-
             builder.HasOne(d => d.UploadedBy)
                 .WithMany(u => u.UploadedDocuments)  
                 .HasForeignKey(d => d.UploadedById)

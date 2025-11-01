@@ -28,11 +28,6 @@ namespace ProjectManager.Infrastructure.Persistence.Configurations
             builder.Property(c => c.UpdatedAt)
                      .IsRequired(false);
 
-            builder.HasOne(c => c.ProjectTask)
-                     .WithMany(pt => pt.Comments)
-                     .HasForeignKey(c => c.ProjectTaskId)
-                     .OnDelete(DeleteBehavior.Cascade);
-
             builder.HasOne(c => c.Author)
                         .WithMany(u => u.Comments)
                         .HasForeignKey(c => c.AuthorId)

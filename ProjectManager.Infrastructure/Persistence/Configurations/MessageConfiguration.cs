@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace ProjectManager.Infrastructure.Persistence.Configurations
 {
-    public class NotificationConfiguration : IEntityTypeConfiguration<Notification>
+    public class MessageConfiguration : IEntityTypeConfiguration<Messages>
     {
-        public void Configure(EntityTypeBuilder<Notification> builder)
+        public void Configure(EntityTypeBuilder<Messages> builder)
         {
             builder.HasKey(n => n.Id);
 
@@ -19,7 +19,7 @@ namespace ProjectManager.Infrastructure.Persistence.Configurations
                 .ValueGeneratedOnAdd();
 
             builder.HasOne(n => n.User)
-                .WithMany(u => u.Notifications)
+                .WithMany(u => u.Messages)
                 .HasForeignKey(n => n.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 

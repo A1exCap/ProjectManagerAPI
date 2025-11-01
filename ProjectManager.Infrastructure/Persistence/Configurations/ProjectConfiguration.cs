@@ -52,26 +52,21 @@ namespace ProjectManager.Infrastructure.Persistence.Configurations
             builder.Property(p => p.Technologies)
                 .IsRequired(false)
                 .HasMaxLength(500);
-            
-            builder.HasOne(p => p.Owner)
-                .WithMany(u => u.OwnedProjects)
-                .HasForeignKey(p => p.OwnerId)
-                .OnDelete(DeleteBehavior.SetNull);
 
             builder.HasMany(p => p.Tasks)
                 .WithOne(t => t.Project)
                 .HasForeignKey(t => t.ProjectId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.HasMany(p => p.ProjectUsers)
-                .WithOne(pu => pu.Project)
-                .HasForeignKey(pu => pu.ProjectId)
-                .OnDelete(DeleteBehavior.Cascade);
-
             builder.HasMany(p => p.Documents)
                 .WithOne(d => d.Project)
                 .HasForeignKey(d => d.ProjectId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasOne(p => p.Owner)
+                .WithMany(u => u.OwnedProjects)
+                .HasForeignKey(p => p.OwnerId)
+                .OnDelete(DeleteBehavior.SetNull);
         }
     }
 }

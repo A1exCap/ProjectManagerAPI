@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using ProjectManager.Domain.Entities;
-using ProjectManager.Infrastructure.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace ProjectManager.Infrastructure.Persistence
 {
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
+    internal class ApplicationDbContext : IdentityDbContext<User>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options) { }
@@ -22,7 +21,7 @@ namespace ProjectManager.Infrastructure.Persistence
         public DbSet<Comment> Comments { get; set; } 
         public DbSet<TaskAttachment> TaskAttachments { get; set; }
         public DbSet<ProjectDocument> ProjectDocuments { get; set; } 
-        public DbSet<Notification> Notifications { get; set; }
+        public DbSet<Messages> Notifications { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

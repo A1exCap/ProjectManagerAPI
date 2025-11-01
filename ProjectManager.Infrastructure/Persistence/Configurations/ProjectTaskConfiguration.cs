@@ -52,15 +52,10 @@ namespace ProjectManager.Infrastructure.Persistence.Configurations
                 .IsRequired(false)
                 .HasMaxLength(500);
 
-            builder.HasOne(t => t.Project)
-                .WithMany(p => p.Tasks)
-                .HasForeignKey(t => t.ProjectId)
-                .OnDelete(DeleteBehavior.Cascade);
-
             builder.HasOne(t => t.Assignee)
                 .WithMany(u => u.AssignedTasks)
                 .HasForeignKey(t=>t.AssigneeId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.SetNull);
             
             builder.HasMany(t => t.Comments)
                 .WithOne(c => c.ProjectTask)

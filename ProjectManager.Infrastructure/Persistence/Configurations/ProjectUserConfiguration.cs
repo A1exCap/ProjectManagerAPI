@@ -18,11 +18,6 @@ namespace ProjectManager.Infrastructure.Persistence.Configurations
             builder.Property(pu => pu.Id)
                 .ValueGeneratedOnAdd();
 
-            builder.HasOne(pu => pu.Project)
-              .WithMany(p => p.ProjectUsers)
-              .HasForeignKey(pu => pu.ProjectId)
-              .OnDelete(DeleteBehavior.Cascade);
-
             builder.Property(pu => pu.Role)
                 .IsRequired()
                 .HasConversion<string>()
@@ -39,6 +34,11 @@ namespace ProjectManager.Infrastructure.Persistence.Configurations
               .WithMany(u => u.ProjectUsers)
               .HasForeignKey(pu => pu.UserId)
               .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasOne(pu => pu.Project)
+            .WithMany(p => p.ProjectUsers)
+            .HasForeignKey(pu => pu.ProjectId)
+            .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasIndex(pu => new { pu.UserId, pu.ProjectId })
                 .IsUnique();
