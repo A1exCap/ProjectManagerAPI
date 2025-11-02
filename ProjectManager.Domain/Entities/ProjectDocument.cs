@@ -14,7 +14,6 @@ namespace ProjectManager.Domain.Entities
         public long FileSize { get; set; }
         public string ContentType { get; set; } = string.Empty;
         public DateTime UploadedAt { get; set; } = DateTime.UtcNow;
-
         public int ProjectId { get; set; }
         public Project Project { get; set; } = null!;
         public Guid? UploadedById { get; set; }

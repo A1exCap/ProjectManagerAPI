@@ -19,9 +19,9 @@ namespace ProjectManager.Infrastructure.Persistence
         public DbSet<ProjectTask> ProjectTasks { get; set; } 
         public DbSet<ProjectUser> ProjectUser { get; set; }
         public DbSet<Comment> Comments { get; set; } 
-        public DbSet<TaskAttachment> TaskAttachments { get; set; }
+        public DbSet<TaskDocument> TaskAttachments { get; set; }
         public DbSet<ProjectDocument> ProjectDocuments { get; set; } 
-        public DbSet<Messages> Notifications { get; set; }
+        public DbSet<Message> Notifications { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

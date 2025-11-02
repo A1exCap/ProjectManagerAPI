@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ProjectManager.Domain.Entities;
-using ProjectManager.Infrastructure.Identity;
 using ProjectManager.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
@@ -24,7 +23,7 @@ namespace ProjectManager.Infrastructure.Extensions
 
             services.AddDataProtection();
 
-            services.AddIdentityCore<ApplicationUser>(options =>
+            services.AddIdentityCore<User>(options =>
             {
                 options.Password.RequiredLength = 6;
                 options.Password.RequireDigit = true;

@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace ProjectManager.Domain.Entities
 {
-    public class Messages
+    public class Message
     {
         public int Id { get; set; }
         public Guid UserId { get; set; } 
         public User User { get; set; } = null!;
         public MessageType NotificationType { get; set; }  
         public string Title { get; set; } = string.Empty;
-        public string Message { get; set; } = string.Empty;
+        public string Content { get; set; } = string.Empty;
         public RelatedEntityType EntityType { get; set; }
         public int RelatedEntityId { get; set; }
         public bool IsRead { get; set; } = false;

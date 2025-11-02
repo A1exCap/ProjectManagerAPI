@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace ProjectManager.Infrastructure.Persistence.Configurations
 {
-    public class MessageConfiguration : IEntityTypeConfiguration<Messages>
+    public class MessageConfiguration : IEntityTypeConfiguration<Message>
     {
-        public void Configure(EntityTypeBuilder<Messages> builder)
+        public void Configure(EntityTypeBuilder<Message> builder)
         {
             builder.HasKey(n => n.Id);
 
@@ -32,7 +32,7 @@ namespace ProjectManager.Infrastructure.Persistence.Configurations
                 .IsRequired()
                 .HasMaxLength(200);
 
-            builder.Property(n => n.Message)
+            builder.Property(n => n.Content)
                 .IsRequired()
                 .HasMaxLength(1000);
 

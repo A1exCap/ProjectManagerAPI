@@ -17,7 +17,7 @@ namespace ProjectManager.Domain.Entities
         public ICollection<ProjectTask> AssignedTasks { get; set; } = new List<ProjectTask>();
         public ICollection<ProjectDocument> UploadedDocuments { get; set; } = new List<ProjectDocument>();
         public ICollection<Comment> Comments { get; set; } = new List<Comment>();
-        public ICollection<Messages> Messages { get; set; } = new List<Messages>();
-        public ICollection<TaskAttachment> UploadedTaskAttachments { get; set; } = new List<TaskAttachment>();
+        public ICollection<Message> Messages { get; set; } = new List<Message>();
+        public ICollection<TaskDocument> UploadedTaskAttachments { get; set; } = new List<TaskDocument>();
     }
 }
