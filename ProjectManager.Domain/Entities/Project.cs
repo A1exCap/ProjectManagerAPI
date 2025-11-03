@@ -18,7 +18,7 @@ namespace ProjectManager.Domain.Entities
         public string? ClientName { get; set; }
         public decimal? Budget { get; set; }
         public string? Technologies { get; set; } 
-        public Guid? OwnerId { get; set; }
+        public string? OwnerId { get; set; }
         public User? Owner { get; set; }
 
         public ICollection<ProjectTask> Tasks { get; set; } = new List<ProjectTask>();

@@ -9,8 +9,8 @@ namespace ProjectManager.Domain.Entities
 {
     public class User : IdentityUser
     {
-        public string FullName { get; set; } = string.Empty;
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public string? RefreshToken { get; set; }
+        public DateTime? RefreshTokenExpiryTime { get; set; } = DateTime.UtcNow.AddDays(7);
 
         public ICollection<Project> OwnedProjects { get; set; } = new List<Project>();
         public ICollection<ProjectUser> ProjectUsers { get; set; } = new List<ProjectUser>();

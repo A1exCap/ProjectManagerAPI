@@ -11,11 +11,11 @@ namespace ProjectManager.Domain.Entities
         public int Id { get; set; }
         public int ProjectId { get; set; }
         public Project Project { get; set; } = null!;
-        public Guid UserId { get; set; }
+        public string? UserId { get; set; } 
         public ProjectUserRole Role { get; set; } // Viewer, Contributor, Manager, Owner
         public DateTime JoinedAt { get; set; } = DateTime.UtcNow;
         public decimal? HourlyRate { get; set; }
-        public User User { get; set; } = null!;
+        public User? User { get; set; } 
     }
     public enum ProjectUserRole
     {

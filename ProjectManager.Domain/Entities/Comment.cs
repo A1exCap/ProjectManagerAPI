@@ -14,7 +14,7 @@ namespace ProjectManager.Domain.Entities
         public bool? Edited{ get; set; }
         public int ProjectTaskId { get; set; }
         public ProjectTask ProjectTask { get; set; } = null!;
-        public Guid AuthorId { get; set; }
-        public User Author { get; set; } = null!;
+        public string? AuthorId { get; set; }
+        public User? Author { get; set; } 
     }
 }

@@ -16,7 +16,7 @@ namespace ProjectManager.Domain.Entities
         public DateTime UploadedAt { get; set; } = DateTime.UtcNow;
         public int ProjectId { get; set; }
         public Project Project { get; set; } = null!;
-        public Guid? UploadedById { get; set; }
+        public string? UploadedById { get; set; }
         public User? UploadedBy { get; set; } 
     }
 }

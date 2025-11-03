@@ -9,8 +9,8 @@ namespace ProjectManager.Domain.Entities
     public class Message
     {
         public int Id { get; set; }
-        public Guid UserId { get; set; } 
-        public User User { get; set; } = null!;
+        public string? UserId { get; set; } 
+        public User? User { get; set; } 
         public MessageType NotificationType { get; set; }  
         public string Title { get; set; } = string.Empty;
         public string Content { get; set; } = string.Empty;

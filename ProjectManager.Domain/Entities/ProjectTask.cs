@@ -22,7 +22,7 @@ namespace ProjectManager.Domain.Entities
 
         public int ProjectId { get; set; }
         public Project Project { get; set; } = null!;
-        public Guid? AssigneeId { get; set; }
+        public string? AssigneeId { get; set; }
         public User? Assignee { get; set; }
         public ICollection<Comment> Comments { get; set; } = new List<Comment>();
         public ICollection<TaskDocument> Attachments { get; set; } = new List<TaskDocument>();
