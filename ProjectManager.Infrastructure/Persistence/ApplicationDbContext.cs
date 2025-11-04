@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using ProjectManager.Domain.Entities;
 using System;
@@ -28,6 +29,18 @@ namespace ProjectManager.Infrastructure.Persistence
             base.OnModelCreating(builder);
 
             builder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+
+            List<IdentityRole> roles = new List<IdentityRole>
+            {
+                new IdentityRole
+                {
+                    Id = "b8a0cf5a-4c9a-4a63-bfe8-7e37e7b87134",
+                    Name = "User",
+                    NormalizedName = "USER"
+                }
+            };
+
+            builder.Entity<IdentityRole>().HasData(roles);
         }
     }
 }
