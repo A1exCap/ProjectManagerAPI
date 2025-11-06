@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using ProjectManager.Domain.Entities;
 using ProjectManager.Domain.DTOs.Account;
+using ProjectManager.Application.Abstractions.Services;
 
 namespace ProjectManager_API.Controllers
 {
@@ -10,8 +11,10 @@ namespace ProjectManager_API.Controllers
     public class AccountController : ControllerBase
     {
         private readonly UserManager<User> _userManager;
-        public AccountController(UserManager<User> userManager)
+        private readonly ITokenService _tokenService;
+        public AccountController(UserManager<User> userManager, ITokenService tokenService)
         {
+            _tokenService = tokenService;
             _userManager = userManager;
         }
 
@@ -22,6 +25,9 @@ namespace ProjectManager_API.Controllers
             {
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
+
+                if (await _userManager.FindByEmailAsync(registerDto.Email) != null)
+                    return BadRequest("User with this email already exists");
 
                 var appUser = new User
                 {
@@ -37,7 +43,14 @@ namespace ProjectManager_API.Controllers
 
                     if (roleResult.Succeeded)
                     {
-                        return Ok("User registered successfully.");
+                        return Ok(
+                            new NewUserDto
+                            {                     
+                                UserName = appUser.UserName,
+                                Email = appUser.Email,
+                                Token = _tokenService.CreateToken(appUser)
+                            }
+                        );
                     }
                     else
                     {
