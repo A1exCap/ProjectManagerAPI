@@ -12,10 +12,41 @@ namespace ProjectManager_API.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly ITokenService _tokenService;
-        public AccountController(UserManager<User> userManager, ITokenService tokenService)
+        private readonly SignInManager<User> _signInManager;
+        public AccountController(UserManager<User> userManager, ITokenService tokenService, SignInManager<User> signInManager)
         {
             _tokenService = tokenService;
             _userManager = userManager;
+            _signInManager = signInManager;
+        }
+
+        [HttpPost("login")]
+
+        public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
+                var user = await _userManager.FindByEmailAsync(loginDto.Email);
+
+                var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
+
+                if (!result.Succeeded || user == null)
+                    return Unauthorized("Invalid email or password");
+
+                return Ok(new NewUserDto
+                {
+                    UserName = user.UserName,
+                    Email = user.Email,
+                    Token = await _tokenService.CreateToken(user)
+                });
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "Internal server error");
+            }
         }
 
         [HttpPost("register")]
@@ -48,7 +79,7 @@ namespace ProjectManager_API.Controllers
                             {                     
                                 UserName = appUser.UserName,
                                 Email = appUser.Email,
-                                Token = _tokenService.CreateToken(appUser)
+                                Token = await _tokenService.CreateToken(appUser)
                             }
                         );
                     }
@@ -61,12 +92,12 @@ namespace ProjectManager_API.Controllers
 
                 else
                 {
-                    return StatusCode(500, createdUser.Errors);
+                    return BadRequest(createdUser.Errors);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return StatusCode(500, ex);
+                return StatusCode(500, "Internal server error");
             }
         }
     }

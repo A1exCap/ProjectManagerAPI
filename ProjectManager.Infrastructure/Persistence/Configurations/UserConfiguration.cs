@@ -15,10 +15,10 @@ namespace ProjectManager.Infrastructure.Persistence.Configurations
         public void Configure(EntityTypeBuilder<User> builder)
         {
             builder.Property(u => u.RefreshToken)
-                .IsRequired();
+                .IsRequired(false);
 
             builder.Property(u => u.RefreshTokenExpiryTime)
-                .IsRequired();
+                .IsRequired(false);
         }
     }
 }

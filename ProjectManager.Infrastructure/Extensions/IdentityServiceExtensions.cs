@@ -21,6 +21,7 @@ namespace ProjectManager.Infrastructure.Extensions
                 options.User.RequireUniqueEmail = true;
             })
             .AddRoles<IdentityRole>()
+            .AddSignInManager()
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
 
