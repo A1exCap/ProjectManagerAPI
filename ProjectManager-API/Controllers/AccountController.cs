@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using ProjectManager.Domain.Entities;
-using ProjectManager.Domain.DTOs.Account;
+using Microsoft.EntityFrameworkCore;
 using ProjectManager.Application.Abstractions.Services;
+using ProjectManager.Domain.DTOs.Account;
+using ProjectManager.Domain.DTOs.Identity;
+using ProjectManager.Domain.Entities;
 
 namespace ProjectManager_API.Controllers
 {
@@ -36,11 +38,14 @@ namespace ProjectManager_API.Controllers
                 if (!result.Succeeded || user == null)
                     return Unauthorized("Invalid email or password");
 
+                var tokens = await _tokenService.CreateToken(user);
+
                 return Ok(new NewUserDto
                 {
                     UserName = user.UserName,
                     Email = user.Email,
-                    Token = await _tokenService.CreateToken(user)
+                    Token = tokens.AccessToken,
+                    RefreshToken = tokens.RefreshToken
                 });
             }
             catch (Exception)
@@ -74,12 +79,15 @@ namespace ProjectManager_API.Controllers
 
                     if (roleResult.Succeeded)
                     {
+                        var tokens = await _tokenService.CreateToken(appUser);
+
                         return Ok(
                             new NewUserDto
                             {                     
                                 UserName = appUser.UserName,
                                 Email = appUser.Email,
-                                Token = await _tokenService.CreateToken(appUser)
+                                Token = tokens.AccessToken,
+                                RefreshToken = tokens.RefreshToken
                             }
                         );
                     }
@@ -99,6 +107,24 @@ namespace ProjectManager_API.Controllers
             {
                 return StatusCode(500, "Internal server error");
             }
+        }
+
+        [HttpPost("refresh")]
+        public async Task<IActionResult> Refresh([FromBody] RefreshRequestDto dto)
+        {
+            var user = await _userManager.Users
+                .FirstOrDefaultAsync(x => x.RefreshToken == dto.RefreshToken);
+
+            if (user == null ||
+                user.RefreshTokenExpiryTime == null ||
+                user.RefreshTokenExpiryTime < DateTime.UtcNow)
+            {
+                return Unauthorized("Invalid refresh token");
+            }
+
+            var tokens = await _tokenService.CreateToken(user);
+
+            return Ok(tokens);
         }
     }
 }

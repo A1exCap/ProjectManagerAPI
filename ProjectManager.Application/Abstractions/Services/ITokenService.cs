@@ -1,4 +1,5 @@
-﻿using ProjectManager.Domain.Entities;
+﻿using ProjectManager.Domain.DTOs.Identity;
+using ProjectManager.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,7 @@ namespace ProjectManager.Application.Abstractions.Services
 {
     public interface ITokenService
     {
-       Task<string> CreateToken(User user);
+        Task<TokenResponseDto> CreateToken(User user);
+        string GenerateRefreshToken();
     }
 }
