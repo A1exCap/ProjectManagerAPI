@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProjectManager.Application.Abstractions.Services;
@@ -126,5 +127,27 @@ namespace ProjectManager_API.Controllers
 
             return Ok(tokens);
         }
+
+        [Authorize]
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout([FromBody] RefreshRequestDto dto)
+        {
+            var user = await _userManager.Users
+                .FirstOrDefaultAsync(u => u.RefreshToken == dto.RefreshToken);
+
+            if (user == null)
+                return BadRequest("Invalid refresh token.");
+
+            user.RefreshToken = null;
+            user.RefreshTokenExpiryTime = null;
+
+            var result = await _userManager.UpdateAsync(user);
+
+            if (!result.Succeeded)
+                return StatusCode(500, "Failed to logout user.");
+
+            return Ok(new { message = "Logged out successfully." });
+        }
+
     }
 }
