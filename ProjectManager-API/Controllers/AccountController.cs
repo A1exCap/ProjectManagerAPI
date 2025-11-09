@@ -1,11 +1,15 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using ProjectManager.Application.Abstractions.Services;
 using ProjectManager.Domain.DTOs.Account;
 using ProjectManager.Domain.DTOs.Identity;
 using ProjectManager.Domain.Entities;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace ProjectManager_API.Controllers
 {
@@ -13,14 +17,16 @@ namespace ProjectManager_API.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
+        private readonly IEmailService _emailService;
         private readonly UserManager<User> _userManager;
         private readonly ITokenService _tokenService;
         private readonly SignInManager<User> _signInManager;
-        public AccountController(UserManager<User> userManager, ITokenService tokenService, SignInManager<User> signInManager)
+        public AccountController(UserManager<User> userManager, ITokenService tokenService, SignInManager<User> signInManager, IEmailService emailService)
         {
             _tokenService = tokenService;
             _userManager = userManager;
             _signInManager = signInManager;
+            _emailService = emailService;
         }
 
         [HttpPost("login")]
@@ -43,6 +49,7 @@ namespace ProjectManager_API.Controllers
 
                 return Ok(new NewUserDto
                 {
+                    Id = Guid.Parse(user.Id),
                     UserName = user.UserName,
                     Email = user.Email,
                     Token = tokens.AccessToken,
@@ -82,9 +89,16 @@ namespace ProjectManager_API.Controllers
                     {
                         var tokens = await _tokenService.CreateToken(appUser);
 
+                        var emailToken = await _userManager.GenerateEmailConfirmationTokenAsync(appUser);
+                        var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(emailToken));
+                        var confirmationLink = $"https://localhost:7037/api/email/confirm?userId={appUser.Id}&token={encodedToken}";
+
+                        await _emailService.SendEmailConfirmationAsync(appUser.Email, confirmationLink);
+
                         return Ok(
                             new NewUserDto
-                            {                     
+                            {                    
+                                Id = Guid.Parse(appUser.Id),
                                 UserName = appUser.UserName,
                                 Email = appUser.Email,
                                 Token = tokens.AccessToken,
@@ -101,12 +115,13 @@ namespace ProjectManager_API.Controllers
 
                 else
                 {
+                    await _userManager.DeleteAsync(appUser);
                     return BadRequest(createdUser.Errors);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(500, "Internal server error");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
 
@@ -149,5 +164,24 @@ namespace ProjectManager_API.Controllers
             return Ok(new { message = "Logged out successfully." });
         }
 
+        [Authorize]
+        [HttpDelete("delete")]
+        public async Task<IActionResult> DeleteAccount()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)
+                           ?? User.FindFirstValue(JwtRegisteredClaimNames.Sub);
+
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user == null)
+                return NotFound("User not found");
+
+            var result = await _userManager.DeleteAsync(user);
+
+            if (!result.Succeeded)
+                return BadRequest(result.Errors);
+
+            return Ok("Account deleted successfully.");
+        }
     }
 }

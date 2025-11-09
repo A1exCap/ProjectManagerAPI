@@ -10,7 +10,7 @@ namespace ProjectManager_API.Extensions
             {
                 options.AddPolicy("AllowFrontend", policy =>
                 {
-                    policy.WithOrigins("https://myfrontend.com")
+                    policy.WithOrigins("https://localhost:7037", "http://localhost:5008", "https://localhost:3000")
                           .AllowAnyHeader()
                           .AllowAnyMethod()
                           .AllowCredentials();

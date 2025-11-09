@@ -18,6 +18,7 @@ namespace ProjectManager.Infrastructure.Extensions
                 options.Password.RequireLowercase = true;
                 options.Password.RequireUppercase = true;
                 options.Password.RequireNonAlphanumeric = false;
+                options.SignIn.RequireConfirmedEmail = true;
                 options.User.RequireUniqueEmail = true;
             })
             .AddRoles<IdentityRole>()

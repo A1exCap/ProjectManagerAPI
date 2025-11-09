@@ -44,7 +44,7 @@ namespace ProjectManager.Application.Services
                 claims.Add(new Claim(ClaimTypes.Role, role));
             }
 
-            var creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha512Signature);
+            var creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha256);
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {

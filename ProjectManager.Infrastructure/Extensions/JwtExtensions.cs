@@ -26,9 +26,12 @@ namespace ProjectManager.Infrastructure.Extensions
                     ValidAudience = config["JWT:Audience"],
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JWT:SigningKey"])),
-                    ClockSkew = TimeSpan.Zero
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero,
+                    ValidAlgorithms = new[] { SecurityAlgorithms.HmacSha256 }
                 };
             });
+
 
             return services;
         }

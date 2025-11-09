@@ -1,10 +1,13 @@
-using ProjectManager.Infrastructure.Extensions;
+using Microsoft.IdentityModel.Logging;
 using Microsoft.OpenApi.Models;
 using ProjectManager.Application.Extensions;
+using ProjectManager.Infrastructure.Extensions;
 using ProjectManager_API.Extensions;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+IdentityModelEventSource.ShowPII = true;
 
 builder.Services.AddPresentationServices();
 builder.Services.AddInfrastructureServices(builder.Configuration);
