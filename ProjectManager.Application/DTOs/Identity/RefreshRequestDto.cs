@@ -10,6 +10,6 @@ namespace ProjectManager.Domain.DTOs.Identity
     public class RefreshRequestDto
     {
         [Required]
-        public string? RefreshToken { get; set; }
+        public string RefreshToken { get; set; } = string.Empty;
     }
 }
