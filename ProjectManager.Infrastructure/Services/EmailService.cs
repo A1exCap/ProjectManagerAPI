@@ -7,8 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mail;
 using MailKit.Net.Smtp;
-using MailKit.Security;
-using MimeKit;
+
 
 namespace ProjectManager.Application.Services
 {

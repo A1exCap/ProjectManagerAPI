@@ -34,7 +34,7 @@ namespace ProjectManager.Application.Services
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                new Claim(JwtRegisteredClaimNames.GivenName, user.UserName)
+                new Claim(ClaimTypes.Name, user.UserName)
             };
 
             var roles = await _userManager.GetRolesAsync(user);

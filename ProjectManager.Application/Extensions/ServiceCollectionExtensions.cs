@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ProjectManager.Application.Abstractions.Services;
-using ProjectManager.Application.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,8 +13,6 @@ namespace ProjectManager.Application.Extensions
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
-            services.AddScoped<ITokenService, TokenService>();
-            services.AddScoped<IEmailService, EmailService>();
             return services;
         }
     }
