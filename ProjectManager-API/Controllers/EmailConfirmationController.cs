@@ -6,6 +6,8 @@ using Microsoft.Extensions.WebEncoders;
 using ProjectManager.Application.Abstractions.Services;
 using ProjectManager.Domain.DTOs.Identity;
 using ProjectManager.Domain.Entities;
+using ProjectManager_API.Common;
+using ProjectManager_API.Exceptions;
 using System.Text;
 
 namespace ProjectManager_API.Controllers
@@ -16,49 +18,54 @@ namespace ProjectManager_API.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly IEmailService _emailService;
+        private readonly ILogger<EmailConfirmationController> _logger;
 
-        public EmailConfirmationController(UserManager<User> userManager, IEmailService emailService)
+        public EmailConfirmationController(UserManager<User> userManager, IEmailService emailService, ILogger<EmailConfirmationController> logger)
         {
             _emailService = emailService;
             _userManager = userManager;
+            _logger = logger;
         }
 
         [HttpGet("confirm")]
-        public async Task<IActionResult> ConfirmEmail([FromQuery] string userId, [FromQuery] string token)
+        public async Task<ActionResult<ApiResponse<object>>> ConfirmEmail([FromQuery] string userId, [FromQuery] string token)
         {
-            var user = await _userManager.FindByIdAsync(userId);
+            _logger.LogInformation("Email confirmation attempt for userId: {UserId}", userId);
 
+            var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
-                return BadRequest("Invalid user ID");
+                throw new NotFoundException("Invalid user ID");
 
             var decodedToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(token));
-
             var result = await _userManager.ConfirmEmailAsync(user, decodedToken);
 
             if (!result.Succeeded)
-                return BadRequest("Invalid or expired confirmation token.");       
-            
-            return Ok("Email confirmed successfully.");
+                throw new ValidationException("Invalid or expired confirmation token.");
+
+            _logger.LogInformation("Email confirmed successfully for userId: {UserId}", userId);
+            return Ok(ApiResponseFactory.Success<object>(null, "Email confirmed successfully"));
         }
 
         [HttpPost("resend")]
-        public async Task<IActionResult> ResendConfirmation([FromBody] ResendEmailDto dto)
+        public async Task<ActionResult<ApiResponse<object>>> ResendConfirmation([FromBody] ResendEmailDto dto)
         {
+            _logger.LogInformation("Resend confirmation attempt for email: {Email}", dto.Email);
+
             var user = await _userManager.FindByEmailAsync(dto.Email);
             if (user == null)
-                return BadRequest("User with this email does not exist.");
+                throw new NotFoundException("User with this email does not exist.");
 
             if (await _userManager.IsEmailConfirmedAsync(user))
-                return BadRequest("Email is already confirmed.");
+                throw new ValidationException("Email is already confirmed.");
 
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
 
             var confirmationLink = $"https://localhost:7037/api/email/confirm?userId={user.Id}&token={encodedToken}";
-
             await _emailService.SendEmailConfirmationAsync(dto.Email, confirmationLink);
 
-            return Ok("Confirmation email has been resent.");
+            _logger.LogInformation("Confirmation email resent to: {Email}", dto.Email);
+            return Ok(ApiResponseFactory.Success<object>(null, "Confirmation email has been resent"));
         }
     }
 }
