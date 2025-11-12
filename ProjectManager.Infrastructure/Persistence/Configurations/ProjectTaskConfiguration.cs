@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace ProjectManager.Infrastructure.Persistence.Configurations
 {
-    public class ProjectTaskConfiguration : IEntityTypeConfiguration<ProjectTask>
+    public class ProjectTaskConfiguration : IEntityTypeConfiguration<Domain.Entities.ProjectTask>
     {
-        public void Configure(EntityTypeBuilder<ProjectTask> builder)
+        public void Configure(EntityTypeBuilder<Domain.Entities.ProjectTask> builder)
         {
             builder.HasKey(t => t.Id);
 

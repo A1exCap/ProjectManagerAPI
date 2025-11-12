@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using ProjectManager.Application.DTOs.Comment;
 using ProjectManager.Domain.Entities;
 using ProjectManager.Domain.Interfaces.Repositories;
 using ProjectManager.Infrastructure.Persistence;
@@ -27,6 +28,16 @@ namespace ProjectManager.Infrastructure.Repositories.MSSQL
             return await _context.Comments
                 .Where(c => c.ProjectTaskId == projectTaskId)
                 .ToListAsync();
+        }
+
+        public async Task<Comment> GetByIdAsync(int id)
+        {
+            var comment = await _context.Comments.FirstOrDefaultAsync(c=>c.Id==id);
+            if (comment==null)
+            {
+                // throw new Exception("Comment not found");
+            }
+            return comment;
         }
     }
 }

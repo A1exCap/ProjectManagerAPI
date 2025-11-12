@@ -13,7 +13,7 @@ namespace ProjectManager.Domain.Entities
         public string Title { get; set; } = string.Empty;
         public string? Description { get; set; }
         public ProjectTaskPriority Priority { get; set; } 
-        public ProjectTaskStatus Status { get; set; } 
+        public ProjectTaskStatus Status { get; set; } = ProjectTaskStatus.ToDo;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime? DueDate { get; set; }
         public int EstimatedHours { get; set; }

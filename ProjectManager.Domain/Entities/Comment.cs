@@ -11,7 +11,7 @@ namespace ProjectManager.Domain.Entities
         public int Id { get; set; }
         public string Content { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-        public bool? Edited{ get; set; }
+        public bool? Edited{ get; set; } = false;
         public int ProjectTaskId { get; set; }
         public ProjectTask ProjectTask { get; set; } = null!;
         public string? AuthorId { get; set; }

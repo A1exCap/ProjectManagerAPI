@@ -9,7 +9,8 @@ namespace ProjectManager.Domain.Interfaces.Repositories
 {
     public interface ICommentRepository
     {
-        Task AddCommentAsync(Comment comment);
+        System.Threading.Tasks.Task AddCommentAsync(Comment comment);
+        Task<Comment> GetByIdAsync(int id);
         Task<ICollection<Comment>> GetAllByProjectTaskIdAsync(int projectTaskId);
     }
 }

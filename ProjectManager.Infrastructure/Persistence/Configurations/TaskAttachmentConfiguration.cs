@@ -18,10 +18,6 @@ namespace ProjectManager.Infrastructure.Persistence.Configurations
             builder.Property(a => a.Id)
                 .ValueGeneratedOnAdd();
 
-            builder.Property(a => a.Name)
-                .IsRequired()
-                .HasMaxLength(255);
-
             builder.Property(a => a.FileName)
                 .IsRequired()
                 .HasMaxLength(255);

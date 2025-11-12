@@ -6,11 +6,9 @@ using System.Threading.Tasks;
 
 namespace ProjectManager.Application.DTOs.Comment
 {
-    public record CommentDto
+    public record CreateCommentDto
     {
+        public int ProjectTaskId { get; set; }
         public string Content { get; set; } = string.Empty;
-        public DateTime CreatedAt { get; set; }
-        public bool? Edited { get; set; }
-        public string? AuthorName { get; set; } 
     }
 }
