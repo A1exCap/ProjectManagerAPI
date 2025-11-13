@@ -70,7 +70,8 @@ namespace ProjectManager.Application.Services
             return new TokenResponseDto
             {
                 AccessToken = accessTokenString,
-                RefreshToken = refreshToken
+                RefreshToken = refreshToken,
+                RefreshTokenExpiryTime = user.RefreshTokenExpiryTime.Value
             };
         }
 

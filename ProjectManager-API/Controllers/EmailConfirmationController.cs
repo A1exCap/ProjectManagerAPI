@@ -7,7 +7,7 @@ using ProjectManager.Application.Abstractions.Services;
 using ProjectManager.Domain.DTOs.Identity;
 using ProjectManager.Domain.Entities;
 using ProjectManager_API.Common;
-using ProjectManager_API.Exceptions;
+using ProjectManager.Application.Exceptions;
 using System.Text;
 
 namespace ProjectManager_API.Controllers
@@ -34,13 +34,19 @@ namespace ProjectManager_API.Controllers
 
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
+            {
+                _logger.LogWarning("Email confirmation failed — user not found: {UserId}", userId);
                 throw new NotFoundException("Invalid user ID");
+            }
 
             var decodedToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(token));
             var result = await _userManager.ConfirmEmailAsync(user, decodedToken);
 
             if (!result.Succeeded)
+            {
+                _logger.LogWarning("Email confirmation failed — invalid/expired token for userId: {UserId}", userId);
                 throw new ValidationException("Invalid or expired confirmation token.");
+            }
 
             _logger.LogInformation("Email confirmed successfully for userId: {UserId}", userId);
             return Ok(ApiResponseFactory.Success<object>(null, "Email confirmed successfully"));
@@ -53,10 +59,16 @@ namespace ProjectManager_API.Controllers
 
             var user = await _userManager.FindByEmailAsync(dto.Email);
             if (user == null)
+            {
+                _logger.LogWarning("Resend confirmation failed — user not found: {Email}", dto.Email);
                 throw new NotFoundException("User with this email does not exist.");
+            }
 
             if (await _userManager.IsEmailConfirmedAsync(user))
+            {
+                _logger.LogInformation("Resend confirmation skipped — email already confirmed: {Email}", dto.Email);
                 throw new ValidationException("Email is already confirmed.");
+            }
 
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));

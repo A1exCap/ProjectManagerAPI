@@ -1,5 +1,5 @@
 ﻿using ProjectManager_API.Common;
-using ProjectManager_API.Exceptions;
+using ProjectManager.Application.Exceptions;
 using System.Net;
 using System.Text.Json;
 
@@ -8,9 +8,9 @@ namespace ProjectManager_API.Middlewares
     public class ExceptionHandlingMiddleware
     {
         private readonly RequestDelegate _next;
-        private readonly ILogger _logger;
+        private readonly ILogger<ExceptionHandlingMiddleware> _logger;
 
-        public ExceptionHandlingMiddleware(RequestDelegate next, ILogger logger)
+        public ExceptionHandlingMiddleware(RequestDelegate next, ILogger<ExceptionHandlingMiddleware> logger)
         {
             _next = next;
             _logger = logger;

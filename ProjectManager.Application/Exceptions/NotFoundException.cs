@@ -1,4 +1,4 @@
-﻿namespace ProjectManager_API.Exceptions
+﻿namespace ProjectManager.Application.Exceptions
 {
     public class NotFoundException : BaseException
     {

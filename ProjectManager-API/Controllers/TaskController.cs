@@ -11,7 +11,7 @@ using ProjectManager.Application.Features.Tasks.Queries.GetAllTasksByProjectIdQu
 using ProjectManager.Application.Features.Tasks.Queries.GetTaskByIdQuery;
 using ProjectManager.Domain.Entities;
 using ProjectManager_API.Common;
-using ProjectManager_API.Exceptions;
+using ProjectManager.Application.Exceptions;
 using System.IdentityModel.Tokens.Jwt;
 
 namespace ProjectManager_API.Controllers
@@ -21,13 +21,11 @@ namespace ProjectManager_API.Controllers
     [ApiController]
     public class TaskController : ControllerBase
     {
-        private readonly UserManager<User> _userManager;
         private readonly IMediator _mediator;
         private readonly ILogger<TaskController> _logger;
 
-        public TaskController(IMediator mediator, UserManager<User> userManager, ILogger<TaskController> logger)
+        public TaskController(IMediator mediator, ILogger<TaskController> logger)
         {
-            _userManager = userManager;
             _mediator = mediator;
             _logger = logger;
         }
@@ -39,9 +37,7 @@ namespace ProjectManager_API.Controllers
 
             var tasks = await _mediator.Send(new GetAllTasksByProjectIdQuery(projectId));
 
-            if (tasks == null || !tasks.Any())
-                throw new NotFoundException($"No tasks found for projectId {projectId}");
-
+            _logger.LogInformation("Request completed: Retrieved {Count} tasks for projectId={ProjectId}", tasks.Count, projectId);
             return Ok(ApiResponseFactory.Success(tasks, "Tasks retrieved successfully"));
         }
 
@@ -52,9 +48,7 @@ namespace ProjectManager_API.Controllers
 
             var task = await _mediator.Send(new GetTaskByIdQuery(taskId));
 
-            if (task == null)
-                throw new NotFoundException($"Task with id {taskId} not found");
-
+            _logger.LogInformation("Request completed: Task details retrieved for taskId={TaskId}", taskId);
             return Ok(ApiResponseFactory.Success(task, "Task retrieved successfully"));
         }
 

@@ -28,8 +28,8 @@ namespace ProjectManager.Infrastructure.Repositories.MSSQL
             return await _context.ProjectTasks.AnyAsync(t => t.Id == taskId);
         }
 
-        public async Task<ICollection<ProjectTask>> GetAllTasksByProjectIdAsync(int projectId)
-        {
+        public async Task<ICollection<ProjectTask>?> GetAllTasksByProjectIdAsync(int projectId)
+        { 
             return await _context.ProjectTasks.Where(t => t.ProjectId == projectId).ToListAsync();
         }
 
