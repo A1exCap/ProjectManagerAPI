@@ -42,6 +42,9 @@ namespace ProjectManager.Infrastructure.Persistence.Configurations
             builder.Property(t => t.DueDate)
                 .IsRequired(false);
 
+            builder.Property(t => t.CompletedAt)
+                .IsRequired(false);
+
             builder.Property(t => t.EstimatedHours)
                 .HasDefaultValue(0);
 

@@ -23,6 +23,16 @@ namespace ProjectManager.Infrastructure.Repositories.MSSQL
             await _context.ProjectTasks.AddAsync(task);
         }
 
+        public async Task DeleteTaskByIdAsync(int taskId)
+        {
+            var task = await GetTaskByIdAsync(taskId);
+
+            if(task == null)
+                return;
+
+            _context.ProjectTasks.Remove(task);
+        }
+
         public async Task<bool> ExistsAsync(int taskId)
         {
             return await _context.ProjectTasks.AnyAsync(t => t.Id == taskId);
@@ -33,7 +43,7 @@ namespace ProjectManager.Infrastructure.Repositories.MSSQL
             return await _context.ProjectTasks.Where(t => t.ProjectId == projectId).ToListAsync();
         }
 
-        public async Task<ProjectTask> GetTaskByIdAsync(int taskId)
+        public async Task<ProjectTask?> GetTaskByIdAsync(int taskId)
         {
             var task = await _context.ProjectTasks
            .Include(t => t.Assignee)
@@ -48,6 +58,11 @@ namespace ProjectManager.Infrastructure.Repositories.MSSQL
             }
 
             return task;
+        }
+
+        public async Task UpdateTaskAsync(ProjectTask task)
+        {
+           _context.ProjectTasks.Update(task);
         }
     }
 }

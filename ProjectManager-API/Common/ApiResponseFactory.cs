@@ -7,6 +7,8 @@
 
         public static ApiResponse<T> Created<T>(T data, string message = "Created successfully")
             => new(201, message, data);
+        public static ApiResponse NoContent()
+            => new(204, string.Empty, null);
 
         public static ApiResponse<T> BadRequest<T>(string message = "Bad request")
             => new(400, message);

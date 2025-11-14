@@ -1,38 +1,57 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 using ProjectManager.Application.Common.Interfaces;
+using ProjectManager.Application.Exceptions;
+using ProjectManager.Application.Services.Access;
 using ProjectManager.Domain.Entities;
 using ProjectManager.Domain.Interfaces.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ProjectManager.Application.Features.Tasks.Commands.CreateTask
 {
     public class CreateTaskCommandHandler : IRequestHandler<CreateTaskCommand, int>
     {
+        private readonly ILogger<CreateTaskCommandHandler> _logger;
+        private readonly IProjectAccessService _accessService;
         private readonly IProjectTaskRepository _taskRepository;
+        private readonly IProjectRepository _projectRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly UserManager<User> _userManager;
 
-        public CreateTaskCommandHandler(IProjectTaskRepository taskRepository, IUnitOfWork unitOfWork, UserManager<User> userManager)
+        public CreateTaskCommandHandler(IProjectTaskRepository taskRepository, IUnitOfWork unitOfWork, UserManager<User> userManager, 
+            IProjectAccessService accessService, ILogger<CreateTaskCommandHandler> logger, IProjectRepository projectRepository)
         {
+            _logger = logger;
+            _accessService = accessService;
             _taskRepository = taskRepository;
             _unitOfWork = unitOfWork;
             _userManager = userManager;
+            _projectRepository = projectRepository;
         }
 
         public async Task<int> Handle(CreateTaskCommand request, CancellationToken cancellationToken)
-        { 
+        {
+            _logger.LogInformation("Handling CreateTaskCommandHandler for projectId: {ProjectId}", request.ProjectId);
+
+            var projectExists = await _projectRepository.ExistsAsync(request.ProjectId);
+            if (!projectExists)
+            {
+                _logger.LogWarning("Project with ID {ProjectId} does not exist", request.ProjectId);
+                throw new NotFoundException($"Project with ID {request.ProjectId} does not exist.");
+            }
+
             User? assignee = null;
             if (!string.IsNullOrEmpty(request.AssigneeEmail))
             {
                 assignee = await _userManager.FindByEmailAsync(request.AssigneeEmail);
                 if (assignee == null)
-                    throw new Exception($"User with email '{request.AssigneeEmail}' not found.");
+                {
+                    _logger.LogWarning("User with email {AssigneeEmail} does not exist", request.AssigneeEmail);
+                    throw new NotFoundException($"User with email '{request.AssigneeEmail}' not found.");
+                }
             }
+
+            await _accessService.EnsureUserHasRoleAsync(request.ProjectId, request.UserId, "Manager");
 
             var task = new ProjectTask
             {
@@ -41,7 +60,6 @@ namespace ProjectManager.Application.Features.Tasks.Commands.CreateTask
                 Priority = request.Priority,
                 DueDate = request.DueDate,
                 EstimatedHours = request.EstimatedHours,
-                ActualHours = request.ActualHours,
                 Tags = request.Tags,
                 ProjectId = request.ProjectId,
                 AssigneeId = assignee?.Id
@@ -50,6 +68,7 @@ namespace ProjectManager.Application.Features.Tasks.Commands.CreateTask
             await _taskRepository.AddTaskAsync(task);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
+            _logger.LogInformation("Created task with ID {TaskId} for projectId: {ProjectId}", task.Id, request.ProjectId);
             return task.Id;
         }
     }

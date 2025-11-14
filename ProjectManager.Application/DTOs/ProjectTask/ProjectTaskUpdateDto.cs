@@ -7,11 +7,12 @@ using System.Threading.Tasks;
 
 namespace ProjectManager.Application.DTOs.ProjectTask
 {
-    public class CreateProjectTaskDto
+    public record ProjectTaskUpdateDto
     {
         public string Title { get; set; } = string.Empty;
         public string? Description { get; set; }
         public ProjectTaskPriority Priority { get; set; }
+        public ProjectTaskStatus Status { get; set; }
         public DateTime? DueDate { get; set; }
         public int EstimatedHours { get; set; }
         public string? Tags { get; set; }

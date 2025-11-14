@@ -16,7 +16,9 @@ namespace ProjectManager.Application.DTOs.ProjectTask
         public ProjectTaskPriority Priority { get; set; }
         public ProjectTaskStatus Status { get; set; }
         public DateTime CreatedAt { get; set; }
+
         public DateTime? DueDate { get; set; }
+        public DateTime? CompletedAt { get; set; }
         public int EstimatedHours { get; set; }
         public int ActualHours { get; set; }
         public string? Tags { get; set; }
