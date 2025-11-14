@@ -20,6 +20,7 @@ namespace ProjectManager.Infrastructure.Extensions
             services.AddScoped<ICommentRepository, CommentRepository>();
             services.AddScoped<IProjectRepository, ProjectRepository>();
             services.AddScoped<IProjectTaskRepository, ProjectTaskRepository>();
+            services.AddScoped<IProjectUserRepository, ProjectUserRepository>();
 
             return services;
         }

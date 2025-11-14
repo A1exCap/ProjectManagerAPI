@@ -49,7 +49,7 @@ namespace ProjectManager_API.Controllers
             }
 
             _logger.LogInformation("Email confirmed successfully for userId: {UserId}", userId);
-            return Ok(ApiResponseFactory.Success<object>(null, "Email confirmed successfully"));
+            return Ok(ApiResponseFactory.NoContent());
         }
 
         [HttpPost("resend")]
@@ -77,7 +77,7 @@ namespace ProjectManager_API.Controllers
             await _emailService.SendEmailConfirmationAsync(dto.Email, confirmationLink);
 
             _logger.LogInformation("Confirmation email resent to: {Email}", dto.Email);
-            return Ok(ApiResponseFactory.Success<object>(null, "Confirmation email has been resent"));
+            return Ok(ApiResponseFactory.NoContent());
         }
     }
 }

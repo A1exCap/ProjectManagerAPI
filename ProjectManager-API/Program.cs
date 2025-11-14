@@ -1,5 +1,6 @@
 using Microsoft.IdentityModel.Logging;
 using Microsoft.OpenApi.Models;
+using ProjectManager.Application.Extensions;
 using ProjectManager.Infrastructure.Extensions;
 using ProjectManager_API.Extensions;
 using ProjectManager_API.Middlewares;
@@ -15,6 +16,7 @@ Log.Logger = new LoggerConfiguration()
 
 builder.Host.UseSerilog();
 
+builder.Services.AddApplicationServices();
 builder.Services.AddPresentationServices();
 builder.Services.AddInfrastructureServices(builder.Configuration);
 

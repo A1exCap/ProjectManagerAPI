@@ -202,7 +202,7 @@ namespace ProjectManager_API.Controllers
 
             _logger.LogInformation("User {UserId} logged out successfully", user.Id);
 
-            return Ok(ApiResponseFactory.Success<object>(null, "Logged out successfully"));
+            return Ok(ApiResponseFactory.NoContent());
         }
 
         [Authorize]
@@ -233,7 +233,7 @@ namespace ProjectManager_API.Controllers
 
             _logger.LogInformation("User {UserId} deleted account successfully", userId);
 
-            return Ok(ApiResponseFactory.Success<object>(null, "Account deleted successfully"));
+            return Ok(ApiResponseFactory.NoContent());
         }
     }
 }

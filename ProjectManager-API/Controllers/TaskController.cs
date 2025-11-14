@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ProjectManager.Application.Common;
 using ProjectManager.Application.DTOs.ProjectTask;
 using ProjectManager.Application.DTOs.Task;
 using ProjectManager.Application.Features.Tasks.Commands.CreateTask;
@@ -30,15 +31,15 @@ namespace ProjectManager_API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<ApiResponse<ICollection<ProjectTaskDto>>>> GetAllTasksByProjectId(int projectId)
+        public async Task<ActionResult<ApiResponse<PagedResult<ProjectTaskDto>>>> GetAllTasksByProjectId(int projectId, [FromQuery] TaskQueryParams queryParams)
         {
             _logger.LogInformation("Getting all tasks for projectId: {ProjectId}", projectId);
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var tasks = await _mediator.Send(new GetAllTasksByProjectIdQuery(projectId, userId));
+            var result = await _mediator.Send(new GetAllTasksByProjectIdQuery(projectId, userId, queryParams));
 
-            _logger.LogInformation("Request completed: Retrieved {Count} tasks for projectId={projectId}", tasks.Count, projectId);
-            return Ok(ApiResponseFactory.Success(tasks, "Tasks retrieved successfully"));
+            _logger.LogInformation("Request completed: Retrieved {Count} tasks for projectId={projectId}", result.Items.Count(), projectId);
+            return Ok(ApiResponseFactory.Success(result, "Tasks retrieved successfully"));
         }
 
         [HttpGet("{taskId}")]
