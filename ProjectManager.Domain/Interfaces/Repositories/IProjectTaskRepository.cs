@@ -9,7 +9,7 @@ namespace ProjectManager.Domain.Interfaces.Repositories
 {
     public interface IProjectTaskRepository
     {
-        Task<ICollection<ProjectTask>> GetAllTasksByProjectIdAsync(int projectId);
+        IQueryable<ProjectTask> GetAllTasksByProjectId(int projectId);
         Task<ProjectTask> GetTaskByIdAsync(int taskId);
         Task AddTaskAsync(ProjectTask task);
         Task UpdateTaskAsync(ProjectTask task);

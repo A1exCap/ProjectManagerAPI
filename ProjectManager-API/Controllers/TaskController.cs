@@ -43,14 +43,14 @@ namespace ProjectManager_API.Controllers
         }
 
         [HttpGet("{taskId}")]
-        public async Task<ActionResult<ApiResponse<ProjectTaskDetailsDto>>> GetTaskById(int taskId)
+        public async Task<ActionResult<ApiResponse<ProjectTaskDetailsDto>>> GetTaskById(int taskId, int projectId)
         {
-            _logger.LogInformation("Getting task details for taskId: {TaskId}", taskId);
+            _logger.LogInformation("Getting task details by taskId: {TaskId}", taskId);
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var task = await _mediator.Send(new GetTaskByIdQuery(taskId, userId));
+            var task = await _mediator.Send(new GetTaskByIdQuery(taskId, projectId, userId));
 
-            _logger.LogInformation("Request completed: Task details retrieved for taskId={taskId}", taskId);
+            _logger.LogInformation("Request completed: Task details retrieved by taskId: {taskId}", taskId);
             return Ok(ApiResponseFactory.Success(task, "Task retrieved successfully"));
         }
 
@@ -64,13 +64,7 @@ namespace ProjectManager_API.Controllers
             var command = new CreateTaskCommand(
                 projectId,
                 userId,
-                dto.Title,
-                dto.Description,
-                dto.Priority,
-                dto.DueDate,
-                dto.EstimatedHours,
-                dto.Tags,
-                dto.AssigneeEmail
+                dto
             );
 
             var taskId = await _mediator.Send(command);
@@ -90,17 +84,10 @@ namespace ProjectManager_API.Controllers
                 projectId,
                 taskId, 
                 userId,
-                dto.Title,
-                dto.Description,
-                dto.Priority,
-                dto.Status,
-                dto.DueDate,
-                dto.EstimatedHours,
-                dto.Tags,
-                dto.AssigneeEmail
+                dto
                 ));
 
-            _logger.LogInformation("Request updated: Task details updated with taskId:{taskId}", taskId);
+            _logger.LogInformation("Request updated: Task details updated with taskId: {taskId}", taskId);
             return Ok(ApiResponseFactory.NoContent());
         }
 
@@ -117,7 +104,7 @@ namespace ProjectManager_API.Controllers
                 userId
                 ));
 
-            _logger.LogInformation("Request completed: Task marked as completed with taskId:{taskId}", taskId);
+            _logger.LogInformation("Request completed: Task marked as completed with taskId: {taskId}", taskId);
             return Ok(ApiResponseFactory.NoContent());
         }
 
@@ -134,7 +121,7 @@ namespace ProjectManager_API.Controllers
                 userId
                 ));
 
-            _logger.LogInformation("Request completed: Task marked as started with taskId:{taskId}", taskId);
+            _logger.LogInformation("Request completed: Task marked as started with taskId: {taskId}", taskId);
             return Ok(ApiResponseFactory.NoContent());
         }
 
@@ -151,7 +138,7 @@ namespace ProjectManager_API.Controllers
                 userId
                 ));
 
-            _logger.LogInformation("Request completed: Task deleted with taskId:{taskId}", taskId);
+            _logger.LogInformation("Request completed: Task deleted with taskId: {taskId}", taskId);
             return Ok(ApiResponseFactory.NoContent());
         }
     }

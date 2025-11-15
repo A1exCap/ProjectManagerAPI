@@ -41,13 +41,13 @@ namespace ProjectManager.Application.Features.Tasks.Commands.CreateTask
             }
 
             User? assignee = null;
-            if (!string.IsNullOrEmpty(request.AssigneeEmail))
+            if (!string.IsNullOrEmpty(request.dto.AssigneeEmail))
             {
-                assignee = await _userManager.FindByEmailAsync(request.AssigneeEmail);
+                assignee = await _userManager.FindByEmailAsync(request.dto.AssigneeEmail);
                 if (assignee == null)
                 {
-                    _logger.LogWarning("User with email {AssigneeEmail} does not exist", request.AssigneeEmail);
-                    throw new NotFoundException($"User with email '{request.AssigneeEmail}' not found.");
+                    _logger.LogWarning("User with email {AssigneeEmail} does not exist", request.dto.AssigneeEmail);
+                    throw new NotFoundException($"User with email '{request.dto.AssigneeEmail}' not found.");
                 }
             }
 
@@ -55,12 +55,12 @@ namespace ProjectManager.Application.Features.Tasks.Commands.CreateTask
 
             var task = new ProjectTask
             {
-                Title = request.Title,
-                Description = request.Description,
-                Priority = request.Priority,
-                DueDate = request.DueDate,
-                EstimatedHours = request.EstimatedHours,
-                Tags = request.Tags,
+                Title = request.dto.Title,
+                Description = request.dto.Description,
+                Priority = request.dto.Priority,
+                DueDate = request.dto.DueDate,
+                EstimatedHours = request.dto.EstimatedHours,
+                Tags = request.dto.Tags,
                 ProjectId = request.ProjectId,
                 AssigneeId = assignee?.Id
             };

@@ -1,7 +1,9 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ProjectManager.Application.Abstractions.Services;
+using ProjectManager.Application.Services;
 using ProjectManager.Application.Services.Access;
+using ProjectManager.Application.Services.Validation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +16,7 @@ namespace ProjectManager.Application.Extensions
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
+            services.AddScoped<ITaskValidationService, TaskValidationService>();
             services.AddScoped<IProjectAccessService, ProjectAccessService>();
             return services;
         }

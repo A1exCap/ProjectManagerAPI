@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using ProjectManager.Application.Common.Interfaces;
 using ProjectManager.Application.Exceptions;
 using ProjectManager.Application.Services.Access;
+using ProjectManager.Application.Services.Validation;
 using ProjectManager.Domain.Entities;
 using ProjectManager.Domain.Interfaces.Repositories;
 
@@ -13,17 +14,15 @@ namespace ProjectManager.Application.Features.Tasks.Commands.UpdateTask
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly UserManager<User> _userManager;
-        private readonly IProjectRepository _projectRepository;
         private readonly IProjectTaskRepository _projectTaskRepository;
         private readonly ILogger<UpdateTaskCommandHandler> _logger;
-        private readonly IProjectAccessService _accessService;
-        public UpdateTaskCommandHandler(ILogger<UpdateTaskCommandHandler> logger, IProjectRepository projectRepository, UserManager<User> userManager,
-            IProjectAccessService accessService, IProjectTaskRepository projectTaskRepository, IUnitOfWork unitOfWork)
+        private readonly ITaskValidationService _taskValidationService;
+        public UpdateTaskCommandHandler(ILogger<UpdateTaskCommandHandler> logger, UserManager<User> userManager,
+            IProjectTaskRepository projectTaskRepository, IUnitOfWork unitOfWork, ITaskValidationService taskValidationService)
         {
+            _taskValidationService = taskValidationService;
             _unitOfWork = unitOfWork;
-            _accessService = accessService;
             _logger = logger;
-            _projectRepository = projectRepository;
             _userManager = userManager;
             _projectTaskRepository = projectTaskRepository;
         }
@@ -31,41 +30,26 @@ namespace ProjectManager.Application.Features.Tasks.Commands.UpdateTask
         {
             _logger.LogInformation("Handling UpdateTaskCommand for taskId: {TaskId}", request.TaskId);
 
-            var projectExists = await _projectRepository.ExistsAsync(request.ProjectId);
-            if (!projectExists)
-            {
-                _logger.LogWarning("Project with ID {ProjectId} does not exist", request.ProjectId);
-                throw new NotFoundException($"Project with ID {request.ProjectId} does not exist.");
-            }
-
             User? assignee = null;
-            if (!string.IsNullOrEmpty(request.AssigneeEmail))
+            if (!string.IsNullOrEmpty(request.dto.AssigneeEmail))
             {
-                assignee = await _userManager.FindByEmailAsync(request.AssigneeEmail);
+                assignee = await _userManager.FindByEmailAsync(request.dto.AssigneeEmail);
                 if (assignee == null)
                 {
-                    _logger.LogWarning("User with email {AssigneeEmail} does not exist", request.AssigneeEmail);
-                    throw new NotFoundException($"User with email '{request.AssigneeEmail}' not found.");
+                    _logger.LogWarning("User with email {AssigneeEmail} does not exist", request.dto.AssigneeEmail);
+                    throw new NotFoundException($"User with email '{request.dto.AssigneeEmail}' not found.");
                 }
             }
 
-            await _accessService.EnsureUserHasRoleAsync(request.ProjectId, request.UserId, "Manager");
+            var task = await _taskValidationService.ValidateTaskInProjectAsync(request.ProjectId, request.TaskId, request.UserId, "Manager", cancellationToken);
 
-            var task = await _projectTaskRepository.GetTaskByIdAsync(request.TaskId);
-
-            if (task == null)
-            {
-                _logger.LogWarning("Task with ID {TaskId} does not exists", request.TaskId);
-                throw new NotFoundException($"Task with ID {request.TaskId} does not exist.");
-            }
-
-            task.Title = request.Title;
-            task.Description = request.Description;
-            task.Priority = request.Priority;   
-            task.Status = request.Status;
-            task.DueDate = request.DueDate;
-            task.EstimatedHours = request.EstimatedHours;
-            task.Tags = request.Tags;
+            task.Title = request.dto.Title;
+            task.Description = request.dto.Description;
+            task.Priority = request.dto.Priority;   
+            task.Status = request.dto.Status;
+            task.DueDate = request.dto.DueDate;
+            task.EstimatedHours = request.dto.EstimatedHours;
+            task.Tags = request.dto.Tags;
             task.AssigneeId = assignee?.Id;
 
             await _projectTaskRepository.UpdateTaskAsync(task);

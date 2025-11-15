@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using ProjectManager.Application.Common;
 using ProjectManager.Application.DTOs.Task;
@@ -37,35 +38,36 @@ namespace ProjectManager.Application.Features.Tasks.Queries.GetAllTasksByProject
 
             await _accessService.EnsureUserHasAccessAsync(request.ProjectId, request.UserId);
 
-            var tasks = await _projectTaskRepository.GetAllTasksByProjectIdAsync(request.ProjectId);
+            var query = _projectTaskRepository.GetAllTasksByProjectId(request.ProjectId);
 
             if (!string.IsNullOrWhiteSpace(request.QueryParams.Title))
-                tasks = tasks.Where(t => t.Title.Contains(request.QueryParams.Title, StringComparison.OrdinalIgnoreCase)).ToList();
+                query = query.Where(t => t.Title.Contains(request.QueryParams.Title, StringComparison.OrdinalIgnoreCase));
 
             if (!string.IsNullOrWhiteSpace(request.QueryParams.AssigneeEmail))
-                tasks = tasks.Where(t => t.Assignee != null && t.Assignee.Email == request.QueryParams.AssigneeEmail).ToList();
+                query = query.Where(t => t.Assignee != null && t.Assignee.Email == request.QueryParams.AssigneeEmail);
 
             if (request.QueryParams.Status.HasValue)
-                tasks = tasks.Where(t => t.Status == request.QueryParams.Status.Value).ToList();
+                query = query.Where(t => t.Status == request.QueryParams.Status.Value);
 
             if (request.QueryParams.Priority.HasValue)
-                tasks = tasks.Where(t => t.Priority == request.QueryParams.Priority.Value).ToList();
+                query = query.Where(t => t.Priority == request.QueryParams.Priority.Value);
 
-            tasks = request.QueryParams.SortBy?.ToLower() switch
+            query = request.QueryParams.SortBy?.ToLower() switch
             {
-                "title" => request.QueryParams.SortDescending ? tasks.OrderByDescending(t => t.Title).ToList() : tasks.OrderBy(t => t.Title).ToList(),
-                "duedate" => request.QueryParams.SortDescending ? tasks.OrderByDescending(t => t.DueDate).ToList() : tasks.OrderBy(t => t.DueDate).ToList(),
-                "priority" => request.QueryParams.SortDescending ? tasks.OrderByDescending(t => t.Priority).ToList() : tasks.OrderBy(t => t.Priority).ToList(),
-                _ => tasks.OrderBy(t => t.Id).ToList() 
+                "title" => request.QueryParams.SortDescending ? query.OrderByDescending(t => t.Title) : query.OrderBy(t => t.Title),
+                "duedate" => request.QueryParams.SortDescending ? query.OrderByDescending(t => t.DueDate) : query.OrderBy(t => t.DueDate),
+                "priority" => request.QueryParams.SortDescending ? query.OrderByDescending(t => t.Priority) : query.OrderBy(t => t.Priority),
+                _ => query.OrderBy(t => t.Id)
             };
 
-            var totalCount = tasks.Count;
-            var items = tasks
+            var totalCount = await query.CountAsync(cancellationToken);
+
+            var items = await query
                 .Skip((request.QueryParams.PageNumber - 1) * request.QueryParams.PageSize)
                 .Take(request.QueryParams.PageSize)
-                .ToList();
+                .ToListAsync(cancellationToken);
 
-            _logger.LogInformation("Retrieved {Count} tasks for projectId: {ProjectId}", tasks.Count, request.ProjectId);
+            _logger.LogInformation("Retrieved {totalCount} tasks for projectId: {ProjectId}", totalCount, request.ProjectId);
             return new PagedResult<ProjectTaskDto>
             {
                 Items = items.Select(ProjectTaskMapper.ToDto),
