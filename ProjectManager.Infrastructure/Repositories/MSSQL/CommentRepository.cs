@@ -23,11 +23,11 @@ namespace ProjectManager.Infrastructure.Repositories.MSSQL
             await _context.Comments.AddAsync(comment);
         }
 
-        public async Task<ICollection<Comment>> GetAllByProjectTaskIdAsync(int projectTaskId)
+        public IQueryable<Comment> GetAllCommentsByTaskId(int projectTaskId)
         { 
-            return await _context.Comments
+            return _context.Comments
                 .Where(c => c.ProjectTaskId == projectTaskId)
-                .ToListAsync();
+                .AsQueryable();
         }
 
         public async Task<Comment> GetByIdAsync(int id)

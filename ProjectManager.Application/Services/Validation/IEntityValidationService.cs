@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace ProjectManager.Application.Services.Validation
 {
-    public interface ITaskValidationService
+    public interface IEntityValidationService
     {
-        Task<ProjectTask> ValidateTaskInProjectAsync(int projectId, int taskId, string userId, string requiredRole,
-            CancellationToken cancellationToken);
+        Task EnsureProjectExistsAsync(int projectId);
+        Task<bool> EnsureTaskBelongsToProjectAsync(int taskId, int projectId);
     }
 }

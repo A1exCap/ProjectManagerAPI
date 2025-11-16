@@ -28,7 +28,7 @@ namespace ProjectManager.Application.Features.Tasks.Commands.UpdateTask
         }
         public async Task<Unit> Handle(UpdateTaskCommand request, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Handling UpdateTaskCommand for taskId: {TaskId}", request.TaskId);
+            _logger.LogInformation("Handling UpdateTaskCommand by taskId: {TaskId}", request.TaskId);
 
             User? assignee = null;
             if (!string.IsNullOrEmpty(request.dto.AssigneeEmail))
@@ -41,7 +41,7 @@ namespace ProjectManager.Application.Features.Tasks.Commands.UpdateTask
                 }
             }
 
-            var task = await _taskValidationService.ValidateTaskInProjectAsync(request.ProjectId, request.TaskId, request.UserId, "Manager", cancellationToken);
+            var task = await _taskValidationService.ValidateTaskCommandAsync(request.ProjectId, request.TaskId, request.UserId, "Manager", cancellationToken);
 
             task.Title = request.dto.Title;
             task.Description = request.dto.Description;

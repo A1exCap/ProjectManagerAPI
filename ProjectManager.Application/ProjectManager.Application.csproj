@@ -16,4 +16,8 @@
     <ProjectReference Include="..\ProjectManager.Domain\ProjectManager.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Features\Comments\Commands\" />
+  </ItemGroup>
+
 </Project>

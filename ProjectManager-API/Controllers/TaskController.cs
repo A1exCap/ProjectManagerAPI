@@ -33,12 +33,12 @@ namespace ProjectManager_API.Controllers
         [HttpGet]
         public async Task<ActionResult<ApiResponse<PagedResult<ProjectTaskDto>>>> GetAllTasksByProjectId(int projectId, [FromQuery] TaskQueryParams queryParams)
         {
-            _logger.LogInformation("Getting all tasks for projectId: {ProjectId}", projectId);
+            _logger.LogInformation("Getting all tasks by projectId: {ProjectId}", projectId);
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var result = await _mediator.Send(new GetAllTasksByProjectIdQuery(projectId, userId, queryParams));
 
-            _logger.LogInformation("Request completed: Retrieved {Count} tasks for projectId={projectId}", result.Items.Count(), projectId);
+            _logger.LogInformation("Request completed: Retrieved {Count} tasks by projectId={ProjectId}", result.Items.Count(), projectId);
             return Ok(ApiResponseFactory.Success(result, "Tasks retrieved successfully"));
         }
 
@@ -50,14 +50,14 @@ namespace ProjectManager_API.Controllers
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var task = await _mediator.Send(new GetTaskByIdQuery(taskId, projectId, userId));
 
-            _logger.LogInformation("Request completed: Task details retrieved by taskId: {taskId}", taskId);
+            _logger.LogInformation("Request completed: Task details retrieved by taskId: {TaskId}", taskId);
             return Ok(ApiResponseFactory.Success(task, "Task retrieved successfully"));
         }
 
         [HttpPost]
         public async Task<ActionResult<ApiResponse<int>>> CreateTask(int projectId, [FromBody] CreateProjectTaskDto dto)
         {
-            _logger.LogInformation("Creating task '{Title}' for projectId: {ProjectId}", dto.Title, projectId);
+            _logger.LogInformation("Creating task '{Title}' with projectId: {ProjectId}", dto.Title, projectId);
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -69,14 +69,14 @@ namespace ProjectManager_API.Controllers
 
             var taskId = await _mediator.Send(command);
 
-            _logger.LogInformation("Request completed: Task created succesfully, task id:{taskId}", taskId);
+            _logger.LogInformation("Request completed: Task created succesfully, task id:{TaskId}", taskId);
             return Ok(ApiResponseFactory.Created(taskId, "Task created successfully"));
         }
 
         [HttpPut("{taskId}")]
         public async Task<ActionResult<ApiResponse>> UpdateTaskById(int taskId, int projectId, [FromBody] ProjectTaskUpdateDto dto)
         {
-            _logger.LogInformation("Updating task details with taskId: {TaskId}", taskId);
+            _logger.LogInformation("Updating task details by taskId: {TaskId}", taskId);
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -87,14 +87,14 @@ namespace ProjectManager_API.Controllers
                 dto
                 ));
 
-            _logger.LogInformation("Request updated: Task details updated with taskId: {taskId}", taskId);
+            _logger.LogInformation("Request updated: Task details updated by taskId: {TaskId}", taskId);
             return Ok(ApiResponseFactory.NoContent());
         }
 
         [HttpPatch("{taskId}/mark-completed")]
         public async Task<ActionResult<ApiResponse>> MarkAsCompletedTaskById(int taskId, int projectId)
         {
-            _logger.LogInformation("Marking task as completed with taskId: {TaskId}", taskId);
+            _logger.LogInformation("Marking task as completed by taskId: {TaskId}", taskId);
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -104,14 +104,14 @@ namespace ProjectManager_API.Controllers
                 userId
                 ));
 
-            _logger.LogInformation("Request completed: Task marked as completed with taskId: {taskId}", taskId);
+            _logger.LogInformation("Request completed: Task marked as completed by taskId: {TaskId}", taskId);
             return Ok(ApiResponseFactory.NoContent());
         }
 
         [HttpPatch("{taskId}/mark-started")]
         public async Task<ActionResult<ApiResponse>> MarkAsStartedTaskById(int taskId, int projectId)
         {
-            _logger.LogInformation("Marking task as started with taskId: {TaskId}", taskId);
+            _logger.LogInformation("Marking task as started by taskId: {TaskId}", taskId);
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -121,14 +121,14 @@ namespace ProjectManager_API.Controllers
                 userId
                 ));
 
-            _logger.LogInformation("Request completed: Task marked as started with taskId: {taskId}", taskId);
+            _logger.LogInformation("Request completed: Task marked as started by taskId: {TaskId}", taskId);
             return Ok(ApiResponseFactory.NoContent());
         }
 
         [HttpDelete("{taskId}")]
         public async Task<ActionResult<ApiResponse>> DeleteTaskById(int taskId, int projectId)
         {
-            _logger.LogInformation("Deleting task with taskId: {TaskId}", taskId);
+            _logger.LogInformation("Deleting task by taskId: {TaskId}", taskId);
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -138,7 +138,7 @@ namespace ProjectManager_API.Controllers
                 userId
                 ));
 
-            _logger.LogInformation("Request completed: Task deleted with taskId: {taskId}", taskId);
+            _logger.LogInformation("Request completed: Task deleted with taskId: {TaskId}", taskId);
             return Ok(ApiResponseFactory.NoContent());
         }
     }

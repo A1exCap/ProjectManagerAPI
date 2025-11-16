@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using ProjectManager.Application.Common.Interfaces;
 using ProjectManager.Application.Exceptions;
 using ProjectManager.Application.Services.Access;
+using ProjectManager.Application.Services.Validation;
 using ProjectManager.Domain.Entities;
 using ProjectManager.Domain.Interfaces.Repositories;
 
@@ -14,31 +15,26 @@ namespace ProjectManager.Application.Features.Tasks.Commands.CreateTask
         private readonly ILogger<CreateTaskCommandHandler> _logger;
         private readonly IProjectAccessService _accessService;
         private readonly IProjectTaskRepository _taskRepository;
-        private readonly IProjectRepository _projectRepository;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IEntityValidationService _entityValidationService;
         private readonly UserManager<User> _userManager;
 
         public CreateTaskCommandHandler(IProjectTaskRepository taskRepository, IUnitOfWork unitOfWork, UserManager<User> userManager, 
-            IProjectAccessService accessService, ILogger<CreateTaskCommandHandler> logger, IProjectRepository projectRepository)
+            IProjectAccessService accessService, ILogger<CreateTaskCommandHandler> logger, IEntityValidationService entityValidationService)
         {
+            _entityValidationService = entityValidationService;
             _logger = logger;
             _accessService = accessService;
             _taskRepository = taskRepository;
             _unitOfWork = unitOfWork;
             _userManager = userManager;
-            _projectRepository = projectRepository;
         }
 
         public async Task<int> Handle(CreateTaskCommand request, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Handling CreateTaskCommandHandler for projectId: {ProjectId}", request.ProjectId);
+            _logger.LogInformation("Handling CreateTaskCommandHandler with projectId: {ProjectId}", request.ProjectId);
 
-            var projectExists = await _projectRepository.ExistsAsync(request.ProjectId);
-            if (!projectExists)
-            {
-                _logger.LogWarning("Project with ID {ProjectId} does not exist", request.ProjectId);
-                throw new NotFoundException($"Project with ID {request.ProjectId} does not exist.");
-            }
+            await _entityValidationService.EnsureProjectExistsAsync(request.ProjectId);
 
             User? assignee = null;
             if (!string.IsNullOrEmpty(request.dto.AssigneeEmail))
@@ -68,7 +64,7 @@ namespace ProjectManager.Application.Features.Tasks.Commands.CreateTask
             await _taskRepository.AddTaskAsync(task);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            _logger.LogInformation("Created task with ID {TaskId} for projectId: {ProjectId}", task.Id, request.ProjectId);
+            _logger.LogInformation("Created task with ID {TaskId} with projectId: {ProjectId}", task.Id, request.ProjectId);
             return task.Id;
         }
     }

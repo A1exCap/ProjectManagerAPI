@@ -16,20 +16,26 @@ namespace ProjectManager.Application.Features.Tasks.Commands.MarkTaskStarted
         private readonly IUnitOfWork _unitOfWork;
         private readonly IProjectTaskRepository _projectTaskRepository;
         private readonly ILogger<MarkTaskStartedCommandHandler> _logger;
-        private readonly ITaskValidationService _taskValidationService;
-        public MarkTaskStartedCommandHandler(IUnitOfWork unitOfWork, ITaskValidationService taskValidationService,
-            IProjectTaskRepository projectTaskRepository, ILogger<MarkTaskStartedCommandHandler> logger)
+        private readonly IProjectAccessService _accessService;  
+        private readonly IEntityValidationService _entityValidationService;
+        public MarkTaskStartedCommandHandler(IUnitOfWork unitOfWork, IProjectAccessService accessService,
+            IProjectTaskRepository projectTaskRepository, ILogger<MarkTaskStartedCommandHandler> logger, IEntityValidationService entityValidationService)
         {
-            _taskValidationService = taskValidationService;
+            _accessService = accessService;
+            _entityValidationService = entityValidationService;
             _unitOfWork = unitOfWork;
             _projectTaskRepository = projectTaskRepository;
             _logger = logger;
         }
         public async Task<Unit> Handle(MarkTaskStartedCommand request, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Handling MarkTaskStartedCommand for taskId: {TaskId}", request.TaskId);
+            _logger.LogInformation("Handling MarkTaskStartedCommand by taskId: {TaskId}", request.TaskId);
 
-            var task = await _taskValidationService.ValidateTaskInProjectAsync(request.ProjectId, request.TaskId, request.UserId, "Contributor", cancellationToken);
+            await _entityValidationService.EnsureProjectExistsAsync(request.ProjectId);
+            await _entityValidationService.EnsureTaskBelongsToProjectAsync(request.TaskId, request.ProjectId);
+            await _accessService.EnsureUserHasRoleAsync(request.ProjectId, request.UserId, "Contributor");
+
+            var task = await _projectTaskRepository.GetTaskByIdAsync(request.TaskId);
 
             task.Status = ProjectTaskStatus.InProgress;
 

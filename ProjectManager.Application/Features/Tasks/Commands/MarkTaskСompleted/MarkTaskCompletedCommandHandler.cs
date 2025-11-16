@@ -25,9 +25,9 @@ namespace ProjectManager.Application.Features.Tasks.Commands.MarkTaskCompleted
         }
         public async Task<Unit> Handle(MarkTaskCompletedCommand request, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Handling MarkTaskCompletedCommand for taskId: {TaskId}", request.TaskId);
+            _logger.LogInformation("Handling MarkTaskCompletedCommand by taskId: {TaskId}", request.TaskId);
 
-            var task = await _taskValidationService.ValidateTaskInProjectAsync(request.ProjectId, request.TaskId, request.UserId, "Contributor", cancellationToken);
+            var task = await _taskValidationService.ValidateTaskCommandAsync(request.ProjectId, request.TaskId, request.UserId, "Contributor", cancellationToken);
 
             task.Status = ProjectTaskStatus.Done;
             task.CompletedAt = DateTime.UtcNow;

@@ -67,7 +67,7 @@ namespace ProjectManager.Application.Features.Tasks.Queries.GetAllTasksByProject
                 .Take(request.QueryParams.PageSize)
                 .ToListAsync(cancellationToken);
 
-            _logger.LogInformation("Retrieved {totalCount} tasks for projectId: {ProjectId}", totalCount, request.ProjectId);
+            _logger.LogInformation("Retrieved {TotalCount} tasks for projectId: {ProjectId}", totalCount, request.ProjectId);
             return new PagedResult<ProjectTaskDto>
             {
                 Items = items.Select(ProjectTaskMapper.ToDto),

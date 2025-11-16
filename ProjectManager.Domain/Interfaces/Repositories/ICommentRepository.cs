@@ -11,6 +11,6 @@ namespace ProjectManager.Domain.Interfaces.Repositories
     {
         System.Threading.Tasks.Task AddCommentAsync(Comment comment);
         Task<Comment> GetByIdAsync(int id);
-        Task<ICollection<Comment>> GetAllByProjectTaskIdAsync(int projectTaskId);
+        IQueryable<Comment> GetAllCommentsByTaskId(int projectTaskId);
     }
 }
