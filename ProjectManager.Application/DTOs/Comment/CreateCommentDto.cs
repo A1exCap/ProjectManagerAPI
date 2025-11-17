@@ -8,7 +8,6 @@ namespace ProjectManager.Application.DTOs.Comment
 {
     public record CreateCommentDto
     {
-        public int ProjectTaskId { get; set; }
         public string Content { get; set; } = string.Empty;
     }
 }

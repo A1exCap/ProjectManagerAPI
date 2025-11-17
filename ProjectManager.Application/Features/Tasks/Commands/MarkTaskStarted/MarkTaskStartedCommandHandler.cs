@@ -16,9 +16,9 @@ namespace ProjectManager.Application.Features.Tasks.Commands.MarkTaskStarted
         private readonly IUnitOfWork _unitOfWork;
         private readonly IProjectTaskRepository _projectTaskRepository;
         private readonly ILogger<MarkTaskStartedCommandHandler> _logger;
-        private readonly IProjectAccessService _accessService;  
+        private readonly IAccessService _accessService;  
         private readonly IEntityValidationService _entityValidationService;
-        public MarkTaskStartedCommandHandler(IUnitOfWork unitOfWork, IProjectAccessService accessService,
+        public MarkTaskStartedCommandHandler(IUnitOfWork unitOfWork, IAccessService accessService,
             IProjectTaskRepository projectTaskRepository, ILogger<MarkTaskStartedCommandHandler> logger, IEntityValidationService entityValidationService)
         {
             _accessService = accessService;
@@ -33,13 +33,13 @@ namespace ProjectManager.Application.Features.Tasks.Commands.MarkTaskStarted
 
             await _entityValidationService.EnsureProjectExistsAsync(request.ProjectId);
             await _entityValidationService.EnsureTaskBelongsToProjectAsync(request.TaskId, request.ProjectId);
-            await _accessService.EnsureUserHasRoleAsync(request.ProjectId, request.UserId, "Contributor");
+            await _accessService.EnsureUserHasRoleAsync(request.ProjectId, request.UserId, ["Contributor"]);
 
             var task = await _projectTaskRepository.GetTaskByIdAsync(request.TaskId);
 
             task.Status = ProjectTaskStatus.InProgress;
 
-            await _projectTaskRepository.UpdateTaskAsync(task);
+            _projectTaskRepository.UpdateTask(task);
             await _unitOfWork.SaveChangesAsync();
 
             _logger.LogInformation("Task with ID {TaskId} marked as started successfully", request.TaskId);

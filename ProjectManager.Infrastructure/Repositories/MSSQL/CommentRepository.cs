@@ -23,21 +23,34 @@ namespace ProjectManager.Infrastructure.Repositories.MSSQL
             await _context.Comments.AddAsync(comment);
         }
 
+        public async Task DeleteCommentByIdAsync(int commentId)
+        {
+            var comment = await _context.Comments.FirstOrDefaultAsync(c => c.Id == commentId);
+            _context.Comments.Remove(comment);
+        }
+
+        public async Task<bool> ExistsAsync(int id)
+        {
+            return await _context.Comments.AnyAsync(c => c.Id == id);
+        }
+
         public IQueryable<Comment> GetAllCommentsByTaskId(int projectTaskId)
         { 
             return _context.Comments
-                .Where(c => c.ProjectTaskId == projectTaskId)
+                .Where(c => c.TaskId == projectTaskId)
                 .AsQueryable();
         }
 
+
+
         public async Task<Comment> GetByIdAsync(int id)
         {
-            var comment = await _context.Comments.FirstOrDefaultAsync(c=>c.Id==id);
-            if (comment==null)
-            {
-                // throw new Exception("Comment not found");
-            }
-            return comment;
+            return await _context.Comments.FirstOrDefaultAsync(c=>c.Id==id);
+        }
+
+        public void UpdateComment(Comment comment)
+        {
+            _context.Comments.Update(comment);
         }
     }
 }

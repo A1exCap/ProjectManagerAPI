@@ -12,7 +12,7 @@ namespace ProjectManager.Domain.Interfaces.Repositories
         IQueryable<ProjectTask> GetAllTasksByProjectId(int projectId);
         Task<ProjectTask> GetTaskByIdAsync(int taskId);
         Task AddTaskAsync(ProjectTask task);
-        Task UpdateTaskAsync(ProjectTask task);
+        void UpdateTask(ProjectTask task);
         Task DeleteTaskByIdAsync(int taskId);
         Task<bool> ExistsAsync(int taskId);
     }

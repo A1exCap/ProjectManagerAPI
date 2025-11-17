@@ -18,13 +18,35 @@ namespace ProjectManager.Application.Services
     {
         private readonly IProjectRepository _projectRepository;
         private readonly IProjectTaskRepository _projectTaskRepository;
+        private readonly ICommentRepository _commentRepository; 
         private readonly ILogger<EntityValidationService> _logger;
 
-        public EntityValidationService(IProjectRepository projectRepository, IProjectTaskRepository projectTaskRepository, ILogger<EntityValidationService> logger)
+        public EntityValidationService(IProjectRepository projectRepository, IProjectTaskRepository projectTaskRepository, 
+            ILogger<EntityValidationService> logger, ICommentRepository commentRepository)
         {
             _logger = logger;
+            _commentRepository = commentRepository;
             _projectRepository = projectRepository;
             _projectTaskRepository = projectTaskRepository;
+        }
+
+        public async Task<bool> EnsureCommentBelongsToTaskAsync(int commentId, int taskId)
+        {
+            var comment = await _commentRepository.GetByIdAsync(commentId);
+
+            if (comment == null)
+            {
+                _logger.LogWarning("Comment {CommentId} does not exist", commentId);
+                throw new NotFoundException($"Comment with ID {commentId} does not exist.");
+            }
+
+            if (comment.TaskId != taskId)
+            {
+                _logger.LogWarning("Comment {CommentId} does not belong to task {TaskId}", commentId, taskId);
+                throw new ForbiddenException("Comment does not belong to this task.");
+            }
+
+            return true;
         }
 
         public async Task EnsureProjectExistsAsync(int projectId)

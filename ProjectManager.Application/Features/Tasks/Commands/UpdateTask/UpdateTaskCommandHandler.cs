@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
+using MimeKit.Cryptography;
 using ProjectManager.Application.Common.Interfaces;
 using ProjectManager.Application.Exceptions;
 using ProjectManager.Application.Services.Access;
@@ -16,19 +17,26 @@ namespace ProjectManager.Application.Features.Tasks.Commands.UpdateTask
         private readonly UserManager<User> _userManager;
         private readonly IProjectTaskRepository _projectTaskRepository;
         private readonly ILogger<UpdateTaskCommandHandler> _logger;
-        private readonly ITaskValidationService _taskValidationService;
-        public UpdateTaskCommandHandler(ILogger<UpdateTaskCommandHandler> logger, UserManager<User> userManager,
-            IProjectTaskRepository projectTaskRepository, IUnitOfWork unitOfWork, ITaskValidationService taskValidationService)
+        private readonly IEntityValidationService _entityValidationService;
+        private readonly IAccessService _accessService;
+
+        public UpdateTaskCommandHandler(ILogger<UpdateTaskCommandHandler> logger, UserManager<User> userManager, IProjectTaskRepository projectTaskRepository, 
+            IUnitOfWork unitOfWork, IEntityValidationService entityValidationService, IAccessService accessService)
         {
-            _taskValidationService = taskValidationService;
+            _entityValidationService = entityValidationService;
             _unitOfWork = unitOfWork;
             _logger = logger;
             _userManager = userManager;
             _projectTaskRepository = projectTaskRepository;
+            _accessService = accessService;
         }
         public async Task<Unit> Handle(UpdateTaskCommand request, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Handling UpdateTaskCommand by taskId: {TaskId}", request.TaskId);
+
+            await _entityValidationService.EnsureProjectExistsAsync(request.ProjectId);
+            await _entityValidationService.EnsureTaskBelongsToProjectAsync(request.TaskId, request.ProjectId);
+            await _accessService.EnsureUserHasRoleAsync(request.ProjectId, request.UserId, ["Owner", "Manager"]);
 
             User? assignee = null;
             if (!string.IsNullOrEmpty(request.dto.AssigneeEmail))
@@ -41,7 +49,7 @@ namespace ProjectManager.Application.Features.Tasks.Commands.UpdateTask
                 }
             }
 
-            var task = await _taskValidationService.ValidateTaskCommandAsync(request.ProjectId, request.TaskId, request.UserId, "Manager", cancellationToken);
+            var task = await _projectTaskRepository.GetTaskByIdAsync(request.TaskId);
 
             task.Title = request.dto.Title;
             task.Description = request.dto.Description;
@@ -52,7 +60,7 @@ namespace ProjectManager.Application.Features.Tasks.Commands.UpdateTask
             task.Tags = request.dto.Tags;
             task.AssigneeId = assignee?.Id;
 
-            await _projectTaskRepository.UpdateTaskAsync(task);
+            _projectTaskRepository.UpdateTask(task);
             await _unitOfWork.SaveChangesAsync();
 
             _logger.LogInformation("Task with ID {TaskId} updated successfully", request.TaskId);

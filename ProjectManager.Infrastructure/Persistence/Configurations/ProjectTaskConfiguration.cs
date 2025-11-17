@@ -62,7 +62,7 @@ namespace ProjectManager.Infrastructure.Persistence.Configurations
             
             builder.HasMany(t => t.Comments)
                 .WithOne(c => c.ProjectTask)
-                .HasForeignKey(c => c.ProjectTaskId)
+                .HasForeignKey(c => c.TaskId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasMany(t => t.Attachments)

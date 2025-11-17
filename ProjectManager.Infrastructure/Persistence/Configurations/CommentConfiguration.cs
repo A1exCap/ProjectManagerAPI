@@ -30,7 +30,7 @@ namespace ProjectManager.Infrastructure.Persistence.Configurations
                         .HasForeignKey(c => c.AuthorId)
                         .OnDelete(DeleteBehavior.SetNull);
 
-            builder.HasIndex(c => c.ProjectTaskId);
+            builder.HasIndex(c => c.TaskId);
         }
     }
 }

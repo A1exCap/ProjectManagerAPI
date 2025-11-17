@@ -12,7 +12,7 @@ namespace ProjectManager.Domain.Entities
         public string Content { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public bool? Edited{ get; set; } = false;
-        public int ProjectTaskId { get; set; }
+        public int TaskId { get; set; }
         public ProjectTask ProjectTask { get; set; } = null!;
         public string? AuthorId { get; set; }
         public User? Author { get; set; } 

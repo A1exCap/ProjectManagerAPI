@@ -13,14 +13,14 @@ namespace ProjectManager.Application.Features.Tasks.Commands.CreateTask
     public class CreateTaskCommandHandler : IRequestHandler<CreateTaskCommand, int>
     {
         private readonly ILogger<CreateTaskCommandHandler> _logger;
-        private readonly IProjectAccessService _accessService;
+        private readonly IAccessService _accessService;
         private readonly IProjectTaskRepository _taskRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IEntityValidationService _entityValidationService;
         private readonly UserManager<User> _userManager;
 
         public CreateTaskCommandHandler(IProjectTaskRepository taskRepository, IUnitOfWork unitOfWork, UserManager<User> userManager, 
-            IProjectAccessService accessService, ILogger<CreateTaskCommandHandler> logger, IEntityValidationService entityValidationService)
+            IAccessService accessService, ILogger<CreateTaskCommandHandler> logger, IEntityValidationService entityValidationService)
         {
             _entityValidationService = entityValidationService;
             _logger = logger;
@@ -35,6 +35,7 @@ namespace ProjectManager.Application.Features.Tasks.Commands.CreateTask
             _logger.LogInformation("Handling CreateTaskCommandHandler with projectId: {ProjectId}", request.ProjectId);
 
             await _entityValidationService.EnsureProjectExistsAsync(request.ProjectId);
+            await _accessService.EnsureUserHasRoleAsync(request.ProjectId, request.UserId, ["Owner", "Manager"]);
 
             User? assignee = null;
             if (!string.IsNullOrEmpty(request.dto.AssigneeEmail))
@@ -45,9 +46,7 @@ namespace ProjectManager.Application.Features.Tasks.Commands.CreateTask
                     _logger.LogWarning("User with email {AssigneeEmail} does not exist", request.dto.AssigneeEmail);
                     throw new NotFoundException($"User with email '{request.dto.AssigneeEmail}' not found.");
                 }
-            }
-
-            await _accessService.EnsureUserHasRoleAsync(request.ProjectId, request.UserId, "Manager");
+            }     
 
             var task = new ProjectTask
             {

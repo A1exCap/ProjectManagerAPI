@@ -14,25 +14,31 @@ namespace ProjectManager.Application.Features.Tasks.Commands.MarkTaskCompleted
         private readonly IUnitOfWork _unitOfWork;
         private readonly IProjectTaskRepository _projectTaskRepository;
         private readonly ILogger<MarkTaskCompletedCommandHandler> _logger;
-        private readonly ITaskValidationService _taskValidationService;
-        public MarkTaskCompletedCommandHandler(IUnitOfWork unitOfWork, ITaskValidationService taskValidationService,
-            IProjectTaskRepository projectTaskRepository, ILogger<MarkTaskCompletedCommandHandler> logger) 
-        { 
-            _taskValidationService = taskValidationService;
+        private readonly IEntityValidationService _entityValidationService;
+        private readonly IAccessService _accessService;
+        public MarkTaskCompletedCommandHandler(IUnitOfWork unitOfWork, IEntityValidationService entityValidationService,
+            IProjectTaskRepository projectTaskRepository, ILogger<MarkTaskCompletedCommandHandler> logger, IAccessService accessService)
+        {
+            _entityValidationService = entityValidationService;
             _unitOfWork = unitOfWork;
             _projectTaskRepository = projectTaskRepository;
             _logger = logger;
+            _accessService = accessService;
         }
         public async Task<Unit> Handle(MarkTaskCompletedCommand request, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Handling MarkTaskCompletedCommand by taskId: {TaskId}", request.TaskId);
 
-            var task = await _taskValidationService.ValidateTaskCommandAsync(request.ProjectId, request.TaskId, request.UserId, "Contributor", cancellationToken);
+            await _entityValidationService.EnsureProjectExistsAsync(request.ProjectId);
+            await _entityValidationService.EnsureTaskBelongsToProjectAsync(request.TaskId, request.ProjectId);
+            await _accessService.EnsureUserHasRoleAsync(request.ProjectId, request.UserId, ["Contributor"]);
+
+            var task = await _projectTaskRepository.GetTaskByIdAsync(request.TaskId);
 
             task.Status = ProjectTaskStatus.Done;
             task.CompletedAt = DateTime.UtcNow;
 
-            await _projectTaskRepository.UpdateTaskAsync(task);
+            _projectTaskRepository.UpdateTask(task);
             await _unitOfWork.SaveChangesAsync();
 
             _logger.LogInformation("Task with ID {TaskId} marked as completed successfully", request.TaskId);

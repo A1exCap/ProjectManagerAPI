@@ -11,5 +11,5 @@ using System.Threading.Tasks;
 
 namespace ProjectManager.Application.Features.Comments.Queries.GetAllCommentsByTaskIdQuery
 {
-    public record class GetAllCommentsByTaskIdQuery(int ProjectId, string UserId, int TaskId, CommentQueryParams QueryParams) : IRequest<PagedResult<CommentDto>>;
+    public record GetAllCommentsByTaskIdQuery(int ProjectId, string UserId, int TaskId, CommentQueryParams QueryParams) : IRequest<PagedResult<CommentDto>>;
 }

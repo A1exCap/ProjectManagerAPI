@@ -61,11 +61,7 @@ namespace ProjectManager_API.Controllers
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var command = new CreateTaskCommand(
-                projectId,
-                userId,
-                dto
-            );
+            var command = new CreateTaskCommand(projectId,userId,dto);
 
             var taskId = await _mediator.Send(command);
 
@@ -80,12 +76,7 @@ namespace ProjectManager_API.Controllers
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            await _mediator.Send(new UpdateTaskCommand(
-                projectId,
-                taskId, 
-                userId,
-                dto
-                ));
+            await _mediator.Send(new UpdateTaskCommand(projectId,taskId, userId,dto));
 
             _logger.LogInformation("Request updated: Task details updated by taskId: {TaskId}", taskId);
             return Ok(ApiResponseFactory.NoContent());
@@ -98,11 +89,7 @@ namespace ProjectManager_API.Controllers
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            await _mediator.Send(new MarkTaskCompletedCommand(
-                projectId,
-                taskId,
-                userId
-                ));
+            await _mediator.Send(new MarkTaskCompletedCommand(projectId,taskId,userId));
 
             _logger.LogInformation("Request completed: Task marked as completed by taskId: {TaskId}", taskId);
             return Ok(ApiResponseFactory.NoContent());
@@ -115,11 +102,7 @@ namespace ProjectManager_API.Controllers
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            await _mediator.Send(new MarkTaskStartedCommand(
-                projectId,
-                taskId,
-                userId
-                ));
+            await _mediator.Send(new MarkTaskStartedCommand(projectId,taskId,userId));
 
             _logger.LogInformation("Request completed: Task marked as started by taskId: {TaskId}", taskId);
             return Ok(ApiResponseFactory.NoContent());
@@ -132,11 +115,7 @@ namespace ProjectManager_API.Controllers
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            await _mediator.Send(new DeleteTaskCommand(
-                projectId,
-                taskId,
-                userId
-                ));
+            await _mediator.Send(new DeleteTaskCommand(projectId,taskId, userId));
 
             _logger.LogInformation("Request completed: Task deleted with taskId: {TaskId}", taskId);
             return Ok(ApiResponseFactory.NoContent());

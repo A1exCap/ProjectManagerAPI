@@ -16,8 +16,8 @@ namespace ProjectManager.Application.Extensions
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
-            services.AddScoped<ITaskValidationService, EntityValidationService>();
-            services.AddScoped<IProjectAccessService, ProjectAccessService>();
+            services.AddScoped<IEntityValidationService, EntityValidationService>();
+            services.AddScoped<IAccessService, AccessService>();
             return services;
         }
     }

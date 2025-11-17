@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace ProjectManager.Application.Services.Access
 {
-    public interface IProjectAccessService
+    public interface IAccessService
     {
+        Task EnsureUserIsCommentAuthorAsync(string userId, int commentId);
         Task EnsureUserHasAccessAsync(int projectId, string userId);
-        Task EnsureUserHasRoleAsync(int projectId, string userId, string requiredRole);
+        Task<bool> EnsureUserHasRoleAsync(int projectId, string userId, string[] allowedRoles);
     }
 }

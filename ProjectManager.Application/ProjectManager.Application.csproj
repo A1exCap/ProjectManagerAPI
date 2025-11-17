@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\Comments\Commands\" />
+    <Folder Include="Behaviors\" />
   </ItemGroup>
 
 </Project>

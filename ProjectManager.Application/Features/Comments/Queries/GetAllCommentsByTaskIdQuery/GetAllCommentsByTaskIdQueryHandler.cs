@@ -7,6 +7,7 @@ using ProjectManager.Application.DTOs.Task;
 using ProjectManager.Application.Exceptions;
 using ProjectManager.Application.Mappers;
 using ProjectManager.Application.Services.Access;
+using ProjectManager.Application.Services.Validation;
 using ProjectManager.Domain.Interfaces.Repositories;
 using System;
 using System.Collections.Generic;
@@ -19,38 +20,24 @@ namespace ProjectManager.Application.Features.Comments.Queries.GetAllCommentsByT
     public class GetAllCommentsByTaskIdQueryHandler : IRequestHandler<GetAllCommentsByTaskIdQuery, PagedResult<CommentDto>>
     {
         private readonly ILogger<GetAllCommentsByTaskIdQueryHandler> _logger;
-        private readonly IProjectRepository _projectRepository;
-        private readonly IProjectAccessService _accessService;
-        private readonly IProjectTaskRepository _projectTaskRepository;
+        private readonly IAccessService _accessService;
         private readonly ICommentRepository _commentRepository;
-        public GetAllCommentsByTaskIdQueryHandler(ILogger<GetAllCommentsByTaskIdQueryHandler> logger, IProjectRepository projectRepository,
-            IProjectAccessService accessService, IProjectTaskRepository projectTaskRepository, ICommentRepository commentRepository)
+        private readonly IEntityValidationService _entityValidationService;
+        public GetAllCommentsByTaskIdQueryHandler(ILogger<GetAllCommentsByTaskIdQueryHandler> logger, IAccessService accessService, 
+            ICommentRepository commentRepository, IEntityValidationService entityValidationService)
         {
-            _projectRepository = projectRepository;
+            _entityValidationService = entityValidationService;
             _accessService = accessService;
             _logger = logger;
-            _projectTaskRepository = projectTaskRepository;
             _commentRepository = commentRepository;
         }
         public async Task<PagedResult<CommentDto>> Handle(GetAllCommentsByTaskIdQuery request, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Handling GetAllCommentsByTaskIdQuery by taskId: {TaskId}", request.TaskId);
 
-            var projectExists = await _projectRepository.ExistsAsync(request.ProjectId);
-            if (!projectExists)
-            {
-                _logger.LogWarning("Project with ID {ProjectId} does not exist", request.ProjectId);
-                throw new NotFoundException($"Project with ID {request.ProjectId} does not exist.");
-            }
-
-            var task = await _projectTaskRepository.GetTaskByIdAsync(request.TaskId);
-            if (task == null)
-            {
-                _logger.LogWarning("Task with ID {TaskId} does not exist", request.TaskId);
-                throw new NotFoundException($"Task with ID {request.TaskId} does not exist.");
-            }
-
-            await _accessService.EnsureUserHasAccessAsync(request.ProjectId, request.UserId);
+            await _entityValidationService.EnsureProjectExistsAsync(request.ProjectId);
+            await _entityValidationService.EnsureTaskBelongsToProjectAsync(request.TaskId, request.ProjectId);
+            await _accessService.EnsureUserHasAccessAsync(request.ProjectId, request.UserId);   
 
             var query = _commentRepository.GetAllCommentsByTaskId(request.TaskId);
 

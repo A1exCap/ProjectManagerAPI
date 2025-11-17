@@ -4,5 +4,5 @@ using ProjectManager.Application.DTOs.Task;
 
 namespace ProjectManager.Application.Features.Tasks.Queries.GetAllTasksByProjectIdQuery
 {
-    public record class GetAllTasksByProjectIdQuery(int ProjectId, string UserId, TaskQueryParams QueryParams) : IRequest<PagedResult<ProjectTaskDto>>;
+    public record GetAllTasksByProjectIdQuery(int ProjectId, string UserId, TaskQueryParams QueryParams) : IRequest<PagedResult<ProjectTaskDto>>;
 }

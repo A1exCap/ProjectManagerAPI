@@ -3,39 +3,34 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using ProjectManager.Application.Common;
 using ProjectManager.Application.DTOs.Task;
-using ProjectManager.Application.Exceptions;
 using ProjectManager.Application.Mappers;
 using ProjectManager.Application.Services.Access;
+using ProjectManager.Application.Services.Validation;
 using ProjectManager.Domain.Interfaces.Repositories;
+using System.Threading.Tasks;
 
 namespace ProjectManager.Application.Features.Tasks.Queries.GetAllTasksByProjectIdQuery
 {
     public class GetAllTasksByProjectIdQueryHandler : IRequestHandler<GetAllTasksByProjectIdQuery, PagedResult<ProjectTaskDto>>
     {
-        private readonly IProjectAccessService _accessService;
         private readonly IProjectTaskRepository _projectTaskRepository;
-        private readonly IProjectRepository _projectRepository;
         private readonly ILogger<GetAllTasksByProjectIdQueryHandler> _logger;
-        public GetAllTasksByProjectIdQueryHandler(IProjectTaskRepository projectTaskRepository, IProjectRepository projectRepository, 
-            IProjectAccessService accessService, ILogger<GetAllTasksByProjectIdQueryHandler> logger)
+        private readonly IEntityValidationService _entityValidationService;
+        private readonly IAccessService _accessService;
+        public GetAllTasksByProjectIdQueryHandler(IProjectTaskRepository projectTaskRepository, ILogger<GetAllTasksByProjectIdQueryHandler> logger, 
+            IEntityValidationService entityValidationService, IAccessService accessService)
         {
+            _entityValidationService = entityValidationService;
             _logger = logger;
-            _accessService = accessService;
             _projectTaskRepository = projectTaskRepository;
-            _projectRepository = projectRepository;
+            _accessService = accessService;
         }
 
         public async Task<PagedResult<ProjectTaskDto>> Handle(GetAllTasksByProjectIdQuery request, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Handling GetAllTasksByProjectIdQuery for projectId: {ProjectId}", request.ProjectId);
 
-            var projectExists = await _projectRepository.ExistsAsync(request.ProjectId);
-            if (!projectExists)
-            {
-                _logger.LogWarning("Project with ID {ProjectId} does not exist", request.ProjectId);
-                throw new NotFoundException($"Project with ID {request.ProjectId} does not exist.");
-            }
-
+            await _entityValidationService.EnsureProjectExistsAsync(request.ProjectId);
             await _accessService.EnsureUserHasAccessAsync(request.ProjectId, request.UserId);
 
             var query = _projectTaskRepository.GetAllTasksByProjectId(request.ProjectId);

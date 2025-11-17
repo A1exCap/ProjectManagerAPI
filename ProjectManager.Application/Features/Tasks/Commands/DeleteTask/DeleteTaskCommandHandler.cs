@@ -14,9 +14,9 @@ namespace ProjectManager.Application.Features.Tasks.Commands.DeleteTask
         private readonly IProjectTaskRepository _projectTaskRepository;
         private readonly ILogger<DeleteTaskCommandHandler> _logger;
         private readonly IEntityValidationService _entityValidationService;
-        private readonly IProjectAccessService _accessService;
+        private readonly IAccessService _accessService;
         public DeleteTaskCommandHandler(IUnitOfWork unitOfWork, IEntityValidationService entityValidationService,
-            IProjectTaskRepository projectTaskRepository, ILogger<DeleteTaskCommandHandler> logger, IProjectAccessService accessService)
+            IProjectTaskRepository projectTaskRepository, ILogger<DeleteTaskCommandHandler> logger, IAccessService accessService)
         {
             _entityValidationService = entityValidationService;
             _unitOfWork = unitOfWork;
@@ -30,7 +30,7 @@ namespace ProjectManager.Application.Features.Tasks.Commands.DeleteTask
 
             await _entityValidationService.EnsureProjectExistsAsync(request.ProjectId);
             await _entityValidationService.EnsureTaskBelongsToProjectAsync(request.TaskId, request.ProjectId);
-            await _accessService.EnsureUserHasRoleAsync(request.ProjectId, request.UserId, "Manager");
+            await _accessService.EnsureUserHasRoleAsync(request.ProjectId, request.UserId, ["Owner", "Manager"]);
 
             var task = await _projectTaskRepository.GetTaskByIdAsync(request.TaskId);
 
