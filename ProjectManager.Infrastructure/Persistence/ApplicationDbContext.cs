@@ -22,7 +22,7 @@ namespace ProjectManager.Infrastructure.Persistence
         public DbSet<Comment> Comments { get; set; } 
         public DbSet<TaskAttachment> TaskAttachments { get; set; }
         public DbSet<ProjectDocument> ProjectDocuments { get; set; } 
-        public DbSet<Message> Notifications { get; set; }
+        public DbSet<Message> Messages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

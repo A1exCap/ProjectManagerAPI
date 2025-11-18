@@ -13,5 +13,6 @@ namespace ProjectManager.Application.Services.Validation
         Task<bool> EnsureTaskBelongsToProjectAsync(int taskId, int projectId);
         Task<bool> EnsureCommentBelongsToTaskAsync(int commentId, int taskId);
         Task<bool> EnsureAttachmentBelongsToTaskAsync(int attachmentId, int taskId);
+        Task<bool> EnsureDocumentBelongsToProjectAsync(int documentId, int projectId);
     }
 }

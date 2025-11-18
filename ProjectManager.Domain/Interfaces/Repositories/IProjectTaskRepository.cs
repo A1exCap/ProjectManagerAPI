@@ -14,6 +14,5 @@ namespace ProjectManager.Domain.Interfaces.Repositories
         Task AddTaskAsync(ProjectTask task);
         void UpdateTask(ProjectTask task);
         Task DeleteTaskByIdAsync(int taskId);
-        Task<bool> ExistsAsync(int taskId);
     }
 }

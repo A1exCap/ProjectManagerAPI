@@ -11,23 +11,20 @@ namespace ProjectManager.Domain.Entities
         public int Id { get; set; }
         public string? UserId { get; set; } 
         public User? User { get; set; } 
-        public MessageType NotificationType { get; set; }  
+        public NotificationType NotificationType { get; set; }  
         public string Title { get; set; } = string.Empty;
-        public string Content { get; set; } = string.Empty;
         public RelatedEntityType EntityType { get; set; }
         public int RelatedEntityId { get; set; }
         public bool IsRead { get; set; } = false;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
-    public enum MessageType
+    public enum NotificationType
     {
         TaskAssigned,
         TaskCompleted,
-        MentionedInComment,
         ProjectInvite,
         DeadlineReminder,
-        NewComment,
-        ProjectRoleChanged,
+        NewComment      // Ready 
     }
     public enum RelatedEntityType
     {

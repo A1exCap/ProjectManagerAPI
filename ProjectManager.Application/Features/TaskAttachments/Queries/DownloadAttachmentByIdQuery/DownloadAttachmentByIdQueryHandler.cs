@@ -36,7 +36,7 @@ namespace ProjectManager.Application.Features.TaskAttachments.Queries.DownloadAt
 
         public async Task<DownloadTaskAttachmentDto> Handle(DownloadAttachmentByIdQuery request, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Handling DownloadTaskAttachmentQuery for attachmentId: {AttachmentId}", request.AttachmentId);
+            _logger.LogInformation("Handling DownloadAttachmentByIdQuery by attachmentId: {AttachmentId}", request.AttachmentId);
 
             await _entityValidationService.EnsureProjectExistsAsync(request.ProjectId);
             await _entityValidationService.EnsureTaskBelongsToProjectAsync(request.TaskId, request.ProjectId);

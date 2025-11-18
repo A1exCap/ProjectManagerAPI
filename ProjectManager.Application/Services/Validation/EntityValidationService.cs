@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Linq;
+using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -22,15 +23,36 @@ namespace ProjectManager.Application.Services
         private readonly ICommentRepository _commentRepository;
         private readonly ITaskAttachmentRepository _taskAttachmentRepository;
         private readonly ILogger<EntityValidationService> _logger;
+        private readonly IProjectDocumentRepository _projectDocumentRepository;
 
         public EntityValidationService(IProjectRepository projectRepository, IProjectTaskRepository projectTaskRepository, 
-            ILogger<EntityValidationService> logger, ICommentRepository commentRepository, ITaskAttachmentRepository taskAttachmentRepository)
+            ILogger<EntityValidationService> logger, ICommentRepository commentRepository, ITaskAttachmentRepository taskAttachmentRepository,
+            IProjectDocumentRepository projectDocumentRepository)
         {
             _logger = logger;
             _commentRepository = commentRepository;
             _projectRepository = projectRepository;
             _projectTaskRepository = projectTaskRepository;
             _taskAttachmentRepository = taskAttachmentRepository;
+            _projectDocumentRepository = projectDocumentRepository;
+        }
+        public async Task<bool> EnsureDocumentBelongsToProjectAsync(int documentId, int projectId)
+        {
+            var document = await _projectDocumentRepository.GetDocumentByIdAsync(documentId);
+
+            if (document == null)
+            {
+                _logger.LogWarning("Document {DocumentId} does not exist", documentId);
+                throw new NotFoundException($"Document with ID {documentId} does not exist.");
+            }
+
+            if (document.ProjectId != projectId)
+            {
+                _logger.LogWarning("Document {DocumentId} does not belong to project {ProjectId}", documentId, projectId);
+                throw new ForbiddenException("Document does not belong to this project.");
+            }
+
+            return true;
         }
 
         public async Task<bool> EnsureAttachmentBelongsToTaskAsync(int attachmentId, int taskId)
@@ -70,6 +92,8 @@ namespace ProjectManager.Application.Services
 
             return true;
         }
+
+     
 
         public async Task EnsureProjectExistsAsync(int projectId)
         {

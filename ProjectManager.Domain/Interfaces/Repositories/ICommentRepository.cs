@@ -12,8 +12,6 @@ namespace ProjectManager.Domain.Interfaces.Repositories
         Task AddCommentAsync(Comment comment);
         Task DeleteCommentByIdAsync(int commentId);
         Task<Comment> GetByIdAsync(int id);
-        Task<bool> ExistsAsync(int id);
-
         IQueryable<Comment> GetAllCommentsByTaskId(int projectTaskId);
         void UpdateComment(Comment comment);
     }

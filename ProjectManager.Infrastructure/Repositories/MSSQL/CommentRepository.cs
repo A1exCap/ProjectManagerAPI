@@ -18,6 +18,7 @@ namespace ProjectManager.Infrastructure.Repositories.MSSQL
         {
             _context = context;
         }
+
         public async Task AddCommentAsync(Comment comment)
         {
             await _context.Comments.AddAsync(comment);
@@ -29,19 +30,12 @@ namespace ProjectManager.Infrastructure.Repositories.MSSQL
             _context.Comments.Remove(comment);
         }
 
-        public async Task<bool> ExistsAsync(int id)
-        {
-            return await _context.Comments.AnyAsync(c => c.Id == id);
-        }
-
         public IQueryable<Comment> GetAllCommentsByTaskId(int projectTaskId)
         { 
             return _context.Comments
                 .Where(c => c.TaskId == projectTaskId)
                 .AsQueryable();
         }
-
-
 
         public async Task<Comment> GetByIdAsync(int id)
         {

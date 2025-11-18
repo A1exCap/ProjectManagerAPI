@@ -13,17 +13,20 @@ using System.Threading.Tasks;
 
 namespace ProjectManager.Infrastructure.Extensions
 {
-    public static class RepositoryExtensions
+    public static class RepositoryAndServiceExtensions
     {
-        public static IServiceCollection AddRepositories(this IServiceCollection services)
+        public static IServiceCollection AddRepositoriesAndServices(this IServiceCollection services)
         {
+            services.AddScoped<IBlobStorageService, AzureBlobStorageService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+
             services.AddScoped<ICommentRepository, CommentRepository>();
             services.AddScoped<IProjectRepository, ProjectRepository>();
             services.AddScoped<IProjectTaskRepository, ProjectTaskRepository>();
             services.AddScoped<IProjectUserRepository, ProjectUserRepository>();
-            services.AddScoped<ITaskAttachmentRepository, TaskAttachmentRepository>();
-            services.AddScoped<IBlobStorageService, AzureBlobStorageService>();
+            services.AddScoped<ITaskAttachmentRepository, TaskAttachmentRepository>();        
+            services.AddScoped<IProjectDocumentRepository, ProjectDocumentRepository>();
+            services.AddScoped<IMessageRepository, MessageRepository>();
 
             return services;
         }

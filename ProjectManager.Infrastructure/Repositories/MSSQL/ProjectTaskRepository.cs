@@ -29,11 +29,6 @@ namespace ProjectManager.Infrastructure.Repositories.MSSQL
             _context.ProjectTasks.Remove(task);
         }
 
-        public async Task<bool> ExistsAsync(int taskId)
-        {
-            return await _context.ProjectTasks.AnyAsync(t => t.Id == taskId);
-        }
-
         public IQueryable<ProjectTask> GetAllTasksByProjectId(int projectId)
         {
             return _context.ProjectTasks

@@ -20,5 +20,6 @@ namespace ProjectManager.Infrastructure.Repositories.MSSQL
         {
             return await _context.Projects.AnyAsync(p => p.Id == id);
         }
+
     }
 }

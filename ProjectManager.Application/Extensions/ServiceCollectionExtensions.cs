@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using ProjectManager.Application.Abstractions.Services;
 using ProjectManager.Application.Services;
 using ProjectManager.Application.Services.Access;
+using ProjectManager.Application.Services.CreateMessage;
 using ProjectManager.Application.Services.Validation;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,7 @@ namespace ProjectManager.Application.Extensions
         {
             services.AddScoped<IEntityValidationService, EntityValidationService>();
             services.AddScoped<IAccessService, AccessService>();
+            services.AddScoped<ICreateMessageService, CreateMessageService>();
             return services;
         }
     }

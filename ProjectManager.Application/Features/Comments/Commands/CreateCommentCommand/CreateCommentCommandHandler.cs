@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using ProjectManager.Application.Common.Interfaces;
 using ProjectManager.Application.Features.Tasks.Commands.CreateTask;
 using ProjectManager.Application.Services.Access;
+using ProjectManager.Application.Services.CreateMessage;
 using ProjectManager.Application.Services.Validation;
 using ProjectManager.Domain.Entities;
 using ProjectManager.Domain.Interfaces.Repositories;
@@ -20,17 +21,22 @@ namespace ProjectManager.Application.Features.Comments.Commands.CreateCommentCom
     {
         private readonly ILogger<CreateCommentCommandHandler> _logger;
         private readonly IEntityValidationService _entityValidationService;
+        private readonly ICreateMessageService _messageService;
         private readonly ICommentRepository _commentRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IAccessService _accessService;
+        private readonly IProjectTaskRepository _projectTaskRepository;
         public CreateCommentCommandHandler(ILogger<CreateCommentCommandHandler> logger, IEntityValidationService entityValidationService, 
-            ICommentRepository commentRepository, IUnitOfWork unitOfWork, IAccessService accessService)
+            ICommentRepository commentRepository, IUnitOfWork unitOfWork, IAccessService accessService, 
+            ICreateMessageService messageService, IProjectTaskRepository projectTaskRepository)
         {
+            _messageService = messageService;
             _unitOfWork = unitOfWork;
             _commentRepository = commentRepository;
             _entityValidationService = entityValidationService;
             _logger = logger;
             _accessService = accessService;
+            _projectTaskRepository = projectTaskRepository;
         }
         public async Task<int> Handle(CreateCommentCommand request, CancellationToken cancellationToken)
         {
@@ -52,7 +58,10 @@ namespace ProjectManager.Application.Features.Comments.Commands.CreateCommentCom
                 AuthorId = request.UserId
             };
 
+            var task = await _projectTaskRepository.GetTaskByIdAsync(request.TaskId);
+
             await _commentRepository.AddCommentAsync(comment);
+            await _messageService.CreateAsync(task.AssigneeId, NotificationType.NewComment, $"New comment on task: {task.Title}", RelatedEntityType.Comment, task.Id);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             _logger.LogInformation("Created comment with ID {CommentId} for TaskId: {TaskId}", comment.Id, request.TaskId);

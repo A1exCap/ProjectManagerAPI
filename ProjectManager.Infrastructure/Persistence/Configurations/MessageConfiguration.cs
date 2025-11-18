@@ -32,10 +32,6 @@ namespace ProjectManager.Infrastructure.Persistence.Configurations
                 .IsRequired()
                 .HasMaxLength(200);
 
-            builder.Property(n => n.Content)
-                .IsRequired()
-                .HasMaxLength(1000);
-
             builder.Property(n => n.EntityType)
                 .IsRequired()
                 .HasConversion<string>()

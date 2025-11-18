@@ -21,7 +21,7 @@ namespace ProjectManager.Infrastructure.Extensions
             services.AddDatabase(config);
             services.AddIdentityServices();
             services.AddJwtAuthentication(config);
-            services.AddRepositories(); 
+            services.AddRepositoriesAndServices(); 
             return services;
         }
     }
