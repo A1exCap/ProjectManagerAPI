@@ -25,6 +25,6 @@ namespace ProjectManager.Application.DTOs.ProjectTask
 
         public string? AssigneeName { get; set; }
         public ICollection<CommentDto> Comments { get; set; } = new List<CommentDto>();
-        public ICollection<TaskDocumentDto> Attachments { get; set; } = new List<TaskDocumentDto>();
+        public ICollection<TaskAttachmentDto> Attachments { get; set; } = new List<TaskAttachmentDto>();
     }
 }

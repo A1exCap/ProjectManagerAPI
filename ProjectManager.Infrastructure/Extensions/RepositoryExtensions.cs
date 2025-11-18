@@ -4,6 +4,7 @@ using ProjectManager.Application.Common.Interfaces;
 using ProjectManager.Domain.Interfaces.Repositories;
 using ProjectManager.Infrastructure.Persistence;
 using ProjectManager.Infrastructure.Repositories.MSSQL;
+using ProjectManager.Infrastructure.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +22,8 @@ namespace ProjectManager.Infrastructure.Extensions
             services.AddScoped<IProjectRepository, ProjectRepository>();
             services.AddScoped<IProjectTaskRepository, ProjectTaskRepository>();
             services.AddScoped<IProjectUserRepository, ProjectUserRepository>();
+            services.AddScoped<ITaskAttachmentRepository, TaskAttachmentRepository>();
+            services.AddScoped<IBlobStorageService, AzureBlobStorageService>();
 
             return services;
         }

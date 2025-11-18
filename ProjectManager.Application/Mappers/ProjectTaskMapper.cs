@@ -37,7 +37,7 @@ namespace ProjectManager.Application.Mappers
                 Tags = task.Tags,
                 AssigneeName = task.Assignee.UserName,
                 Comments = task.Comments.Select(CommentMapper.ToDto).ToList(),
-                Attachments = task.Attachments.Select(TaskDocumentMapper.ToDto).ToList()
+                Attachments = task.Attachments.Select(TaskAttachmentMapper.ToDto).ToList()
             };
         }
     }

@@ -23,7 +23,7 @@ namespace ProjectManager_API.Extensions
             services.AddSwaggerGenConfig();
             services.AddSecurityServices();
 
-            services.AddSingleton(x =>
+            services.AddScoped(x =>
             {
                 var config = x.GetRequiredService<IConfiguration>();
                 return new BlobServiceClient(config["AzureStorage:ConnectionString"]);

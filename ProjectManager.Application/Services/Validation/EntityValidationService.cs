@@ -8,6 +8,7 @@ using ProjectManager.Domain.Entities;
 using ProjectManager.Domain.Interfaces.Repositories;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,16 +19,37 @@ namespace ProjectManager.Application.Services
     {
         private readonly IProjectRepository _projectRepository;
         private readonly IProjectTaskRepository _projectTaskRepository;
-        private readonly ICommentRepository _commentRepository; 
+        private readonly ICommentRepository _commentRepository;
+        private readonly ITaskAttachmentRepository _taskAttachmentRepository;
         private readonly ILogger<EntityValidationService> _logger;
 
         public EntityValidationService(IProjectRepository projectRepository, IProjectTaskRepository projectTaskRepository, 
-            ILogger<EntityValidationService> logger, ICommentRepository commentRepository)
+            ILogger<EntityValidationService> logger, ICommentRepository commentRepository, ITaskAttachmentRepository taskAttachmentRepository)
         {
             _logger = logger;
             _commentRepository = commentRepository;
             _projectRepository = projectRepository;
             _projectTaskRepository = projectTaskRepository;
+            _taskAttachmentRepository = taskAttachmentRepository;
+        }
+
+        public async Task<bool> EnsureAttachmentBelongsToTaskAsync(int attachmentId, int taskId)
+        {
+            var attachment = await _taskAttachmentRepository.GetAttachmentByIdAsync(attachmentId);
+
+            if (attachment == null)
+            {
+                _logger.LogWarning("Attachemnt {AttachmentId} does not exist", attachmentId);
+                throw new NotFoundException($"Attachment with ID {attachmentId} does not exist.");
+            }
+
+            if (attachment.ProjectTaskId != taskId)
+            {
+                _logger.LogWarning("Attachemnt {AttachmentId} does not belong to task {TaskId}", attachmentId, taskId);
+                throw new ForbiddenException("Attachemnt does not belong to this task.");
+            }
+
+            return true;
         }
 
         public async Task<bool> EnsureCommentBelongsToTaskAsync(int commentId, int taskId)

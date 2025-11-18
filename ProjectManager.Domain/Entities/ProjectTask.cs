@@ -26,7 +26,7 @@ namespace ProjectManager.Domain.Entities
         public string? AssigneeId { get; set; }
         public User? Assignee { get; set; }
         public ICollection<Comment> Comments { get; set; } = new List<Comment>();
-        public ICollection<TaskDocument> Attachments { get; set; } = new List<TaskDocument>();
+        public ICollection<TaskAttachment> Attachments { get; set; } = new List<TaskAttachment>();
     }
     public enum ProjectTaskPriority
     {

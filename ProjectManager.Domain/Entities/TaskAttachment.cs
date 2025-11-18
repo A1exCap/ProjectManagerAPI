@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ProjectManager.Domain.Entities
 {
-    public class TaskDocument
+    public class TaskAttachment
     {
         public int Id { get; set; }
         public string FileName { get; set; } = string.Empty;

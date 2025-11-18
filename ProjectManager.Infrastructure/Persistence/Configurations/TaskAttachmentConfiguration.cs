@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace ProjectManager.Infrastructure.Persistence.Configurations
 {
-    public class TaskAttachmentConfiguration : IEntityTypeConfiguration<TaskDocument>
+    public class TaskAttachmentConfiguration : IEntityTypeConfiguration<TaskAttachment>
     {
-        public void Configure(EntityTypeBuilder<TaskDocument> builder)
+        public void Configure(EntityTypeBuilder<TaskAttachment> builder)
         {
             builder.HasKey(a => a.Id);
 
