@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ProjectManager.Application.DTOs.ProjectTask
 {
-    public class ProjectTaskDetailsDto
+    public record ProjectTaskDetailsDto
     {
         public string Title { get; set; } = string.Empty;
         public string? Description { get; set; }

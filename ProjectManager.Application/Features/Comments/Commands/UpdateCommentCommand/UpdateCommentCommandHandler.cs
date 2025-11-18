@@ -33,12 +33,6 @@ namespace ProjectManager.Application.Features.Comments.Commands.UpdateCommentCom
         {
             _logger.LogInformation("Handling UpdateCommentCommand by commentId: {Comment}", request.CommentId);
 
-            if (string.IsNullOrWhiteSpace(request.dto.Content))
-            {
-                _logger.LogWarning("Comment content is empty");
-                throw new ValidationException("Comment content cannot be empty.");
-            }
-
             await _entityValidationService.EnsureProjectExistsAsync(request.ProjectId);
             await _entityValidationService.EnsureTaskBelongsToProjectAsync(request.TaskId, request.ProjectId);
             await _entityValidationService.EnsureCommentBelongsToTaskAsync(request.CommentId, request.TaskId);

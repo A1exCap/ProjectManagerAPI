@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ProjectManager.Domain.DTOs.Identity
 {
-    public class ResendEmailDto
+    public record ResendEmailDto
     {
         public string? Email { get; set; }
         public string? ClientUrl { get; set; }

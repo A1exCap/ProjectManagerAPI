@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ProjectManager.Application.DTOs.TaskAttachment
 {
-    public class DownloadTaskAttachmentDto
+    public record DownloadTaskAttachmentDto
     {
         public byte[] FileContent { get; set; } = Array.Empty<byte>();
         public string FileName { get; set; } = string.Empty;

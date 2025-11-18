@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ProjectManager.Domain.DTOs.Account
 {
-    public class NewUserDto
+    public record NewUserDto
     {
         public Guid Id { get; set; }
         public string UserName { get; set; } = string.Empty;

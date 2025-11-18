@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ProjectManager.Domain.DTOs.Account
 {
-    public class RegisterDto
+    public record RegisterDto
     {
         [Required]
         public string Username { get; set; } = string.Empty;

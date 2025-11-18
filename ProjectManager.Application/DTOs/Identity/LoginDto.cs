@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ProjectManager.Domain.DTOs.Account
 {
-    public class LoginDto
+    public record LoginDto
     {
         [Required]
         [EmailAddress]

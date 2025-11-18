@@ -9,10 +9,12 @@ namespace ProjectManager.Application.Services.Validation
 {
     public interface IEntityValidationService
     {
+        ProjectUserRole EnsureRoleIsValid(string roleName);
+        Task EnsureUserIsProjectMemberAsync(int projectId, string userId);
         Task EnsureProjectExistsAsync(int projectId);
-        Task<bool> EnsureTaskBelongsToProjectAsync(int taskId, int projectId);
-        Task<bool> EnsureCommentBelongsToTaskAsync(int commentId, int taskId);
-        Task<bool> EnsureAttachmentBelongsToTaskAsync(int attachmentId, int taskId);
-        Task<bool> EnsureDocumentBelongsToProjectAsync(int documentId, int projectId);
+        Task EnsureTaskBelongsToProjectAsync(int taskId, int projectId);
+        Task EnsureCommentBelongsToTaskAsync(int commentId, int taskId);
+        Task EnsureAttachmentBelongsToTaskAsync(int attachmentId, int taskId);
+        Task EnsureDocumentBelongsToProjectAsync(int documentId, int projectId);
     }
 }

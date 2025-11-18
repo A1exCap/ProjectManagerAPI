@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ProjectManager.Domain.DTOs.Identity
 {
-    public class TokenResponseDto
+    public record TokenResponseDto
     {
         public string AccessToken { get; set; } = "";
         public string RefreshToken { get; set; } = ""; 

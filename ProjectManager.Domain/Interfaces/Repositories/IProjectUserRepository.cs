@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ProjectManager.Domain.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,11 @@ namespace ProjectManager.Domain.Interfaces.Repositories
 {
     public interface IProjectUserRepository
     {
+        void DeleteProjectUser(ProjectUser projectUser);
+        Task AddProjectUserAsync(ProjectUser projectUser);
+        IQueryable<ProjectUser> GetAllUsersByProjectId(int projectId);
+        void UpdateProjectUser(ProjectUser projectUser);
+        Task<ProjectUser> GetProjectUserdAsync(int projectId, string userId);
         Task<string> GetUserRoleAsync(int projectId, string userId);
         Task<bool> ExistsAsync(int pojectId, string userId);
     }

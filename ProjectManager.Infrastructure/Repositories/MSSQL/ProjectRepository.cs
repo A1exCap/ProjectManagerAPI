@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using ProjectManager.Domain.Entities;
 using ProjectManager.Domain.Interfaces.Repositories;
 using ProjectManager.Infrastructure.Persistence;
 using System;
@@ -21,5 +22,14 @@ namespace ProjectManager.Infrastructure.Repositories.MSSQL
             return await _context.Projects.AnyAsync(p => p.Id == id);
         }
 
+        public async Task<Project?> GetByProjectIdAsync(int projectId)
+        {
+            return await _context.Projects
+                .Include(p => p.ProjectUsers)
+                .Include(p => p.Tasks)
+                .Include(p => p.Tasks)
+                .Include(p => p.Tasks)
+                .FirstOrDefaultAsync(p => p.Id == projectId);
+        }
     }
 }

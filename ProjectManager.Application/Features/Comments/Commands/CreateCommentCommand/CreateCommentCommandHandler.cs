@@ -40,12 +40,7 @@ namespace ProjectManager.Application.Features.Comments.Commands.CreateCommentCom
         }
         public async Task<int> Handle(CreateCommentCommand request, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Handling CreateCommentCommandHandler with CommentText: {Content}", request.dto.Content);
-            if(string.IsNullOrWhiteSpace(request.dto.Content))
-            {
-                _logger.LogWarning("Comment content is empty");
-                throw new ValidationException("Comment content cannot be empty.");
-            }
+            _logger.LogInformation("Handling CreateCommentCommand with CommentText: {Content}", request.dto.Content);
 
             await _entityValidationService.EnsureProjectExistsAsync(request.ProjectId);
             await _entityValidationService.EnsureTaskBelongsToProjectAsync(request.TaskId, request.ProjectId);

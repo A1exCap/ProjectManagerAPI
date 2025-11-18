@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ProjectManager.Domain.DTOs.Identity
 {
-    public class RefreshRequestDto
+    public record RefreshRequestDto
     {
         [Required]
         public string RefreshToken { get; set; } = string.Empty;

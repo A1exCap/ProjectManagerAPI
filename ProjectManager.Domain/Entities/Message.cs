@@ -24,7 +24,8 @@ namespace ProjectManager.Domain.Entities
         TaskCompleted,
         ProjectInvite,
         DeadlineReminder,
-        NewComment      // Ready 
+        NewComment,
+        ProjectRoleChanged
     }
     public enum RelatedEntityType
     {

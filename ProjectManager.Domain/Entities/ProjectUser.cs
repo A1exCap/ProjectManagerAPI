@@ -12,7 +12,7 @@ namespace ProjectManager.Domain.Entities
         public int ProjectId { get; set; }
         public Project Project { get; set; } = null!;
         public string? UserId { get; set; } 
-        public ProjectUserRole Role { get; set; } // Viewer, Contributor, Manager, Owner
+        public ProjectUserRole Role { get; set; } = ProjectUserRole.Viewer;
         public DateTime JoinedAt { get; set; } = DateTime.UtcNow;
         public decimal? HourlyRate { get; set; }
         public User? User { get; set; } 

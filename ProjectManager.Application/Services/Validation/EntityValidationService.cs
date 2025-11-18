@@ -36,7 +36,8 @@ namespace ProjectManager.Application.Services
             _taskAttachmentRepository = taskAttachmentRepository;
             _projectDocumentRepository = projectDocumentRepository;
         }
-        public async Task<bool> EnsureDocumentBelongsToProjectAsync(int documentId, int projectId)
+
+        public async Task EnsureDocumentBelongsToProjectAsync(int documentId, int projectId)
         {
             var document = await _projectDocumentRepository.GetDocumentByIdAsync(documentId);
 
@@ -51,11 +52,9 @@ namespace ProjectManager.Application.Services
                 _logger.LogWarning("Document {DocumentId} does not belong to project {ProjectId}", documentId, projectId);
                 throw new ForbiddenException("Document does not belong to this project.");
             }
-
-            return true;
         }
 
-        public async Task<bool> EnsureAttachmentBelongsToTaskAsync(int attachmentId, int taskId)
+        public async Task EnsureAttachmentBelongsToTaskAsync(int attachmentId, int taskId)
         {
             var attachment = await _taskAttachmentRepository.GetAttachmentByIdAsync(attachmentId);
 
@@ -70,11 +69,9 @@ namespace ProjectManager.Application.Services
                 _logger.LogWarning("Attachemnt {AttachmentId} does not belong to task {TaskId}", attachmentId, taskId);
                 throw new ForbiddenException("Attachemnt does not belong to this task.");
             }
-
-            return true;
         }
 
-        public async Task<bool> EnsureCommentBelongsToTaskAsync(int commentId, int taskId)
+        public async Task EnsureCommentBelongsToTaskAsync(int commentId, int taskId)
         {
             var comment = await _commentRepository.GetByIdAsync(commentId);
 
@@ -89,12 +86,7 @@ namespace ProjectManager.Application.Services
                 _logger.LogWarning("Comment {CommentId} does not belong to task {TaskId}", commentId, taskId);
                 throw new ForbiddenException("Comment does not belong to this task.");
             }
-
-            return true;
         }
-
-     
-
         public async Task EnsureProjectExistsAsync(int projectId)
         {
             if (!await _projectRepository.ExistsAsync(projectId))
@@ -103,8 +95,7 @@ namespace ProjectManager.Application.Services
                 throw new NotFoundException($"Project with ID {projectId} does not exist.");
             }
         }
-
-        public async Task<bool> EnsureTaskBelongsToProjectAsync(int taskId, int projectId)
+        public async Task EnsureTaskBelongsToProjectAsync(int taskId, int projectId)
         {
             var task = await _projectTaskRepository.GetTaskByIdAsync(taskId);
 
@@ -119,8 +110,27 @@ namespace ProjectManager.Application.Services
                 _logger.LogWarning("Task {TaskId} does not belong to project {ProjectId}", taskId, projectId);
                 throw new ForbiddenException("Task does not belong to this project.");
             }
+        }
 
-            return true;
+        public async Task EnsureUserIsProjectMemberAsync(int projectId, string userId)
+        {
+            var project = await _projectRepository.GetByProjectIdAsync(projectId);
+
+            if(!project.ProjectUsers.Any(pu => pu.UserId == userId && pu.ProjectId == projectId))
+            {
+                _logger.LogWarning("User {UserId} is not a member of project {ProjectId}", userId, projectId);
+                throw new ForbiddenException("User is not a member of this project.");
+            }
+        }
+
+        public ProjectUserRole EnsureRoleIsValid(string roleName)
+        {
+            if (!Enum.TryParse<ProjectUserRole>(roleName, out ProjectUserRole role))
+            {
+                _logger.LogError("Invalid role provided: {UserRole}", role);
+                throw new ValidationException("Invalid role provided.");
+            }
+            return role;
         }
     }
 }
