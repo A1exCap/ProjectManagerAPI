@@ -60,7 +60,7 @@ namespace ProjectManager_API.Controllers
 
             await _mediator.Send(new UpdateCommentCommand(projectId, taskId, commentId, userId, dto));
 
-            _logger.LogInformation("Request updated: Task details updated by taskId: {TaskId}", taskId);
+            _logger.LogInformation("Request updated: Comment context updated by commentId: {ContextId}", commentId);
             return Ok(ApiResponseFactory.NoContent());
         }
 

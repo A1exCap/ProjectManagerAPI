@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Azure.Storage.Blobs;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.OpenApi.Models;
 using Org.BouncyCastle.Asn1.X509.Qualified;
@@ -21,6 +22,12 @@ namespace ProjectManager_API.Extensions
             services.AddControllers();
             services.AddSwaggerGenConfig();
             services.AddSecurityServices();
+
+            services.AddSingleton(x =>
+            {
+                var config = x.GetRequiredService<IConfiguration>();
+                return new BlobServiceClient(config["AzureStorage:ConnectionString"]);
+            });
 
             return services;
         }
