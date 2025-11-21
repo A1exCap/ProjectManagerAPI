@@ -35,7 +35,6 @@ namespace ProjectManager.Application.Features.Comments.Commands.DeleteCommentCom
             await _entityValidationService.EnsureProjectExistsAsync(request.ProjectId);
             await _entityValidationService.EnsureTaskBelongsToProjectAsync(request.TaskId, request.ProjectId);
             await _entityValidationService.EnsureCommentBelongsToTaskAsync(request.CommentId, request.TaskId);
-            await _accessService.EnsureUserHasAccessAsync(request.ProjectId, request.UserId);
             await _accessService.EnsureUserIsCommentAuthorAsync(request.UserId, request.CommentId);
           
             await _commentRepository.DeleteCommentByIdAsync(request.CommentId);

@@ -48,7 +48,7 @@ namespace ProjectManager_API.Controllers
             var commentId = await _mediator.Send(new CreateCommentCommand(projectId, taskId, userId, dto));
 
             _logger.LogInformation("Request completed: Comment created successfully, comment id:{CommentId}", commentId);
-            return Ok(ApiResponseFactory.Created(commentId));
+            return Ok(ApiResponseFactory.Created(commentId, "Comment created successfully"));
         }
 
         [HttpPatch("{commentId}")]

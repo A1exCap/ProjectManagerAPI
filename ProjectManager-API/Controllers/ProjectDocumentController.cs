@@ -37,7 +37,7 @@ namespace ProjectManager_API.Controllers
             var result = await _mediator.Send(new GetAllDocumentsByProjectIdQuery(projectId, userId, queryParams));
 
             _logger.LogInformation("Request completed: Retrieved {Count} documents by projectId: {TaskId}", result.Items.Count(), projectId);
-            return Ok(ApiResponseFactory.Success(result));
+            return Ok(ApiResponseFactory.Success(result, "Documents retrieved successfully"));
         }
 
         [HttpPost]
@@ -49,7 +49,7 @@ namespace ProjectManager_API.Controllers
             var documentId = await _mediator.Send(new UploadDocumentCommand(file, userId, projectId));
 
             _logger.LogInformation("Request completed: Document uploaded successfully, Document id: {DocumentId}", documentId);
-            return Ok(ApiResponseFactory.Created(documentId));
+            return Ok(ApiResponseFactory.Created(documentId, "Document created successfully"));
         }
 
         [HttpGet("{documentId}/download")]

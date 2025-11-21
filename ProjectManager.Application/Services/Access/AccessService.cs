@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using ProjectManager.Application.Exceptions;
+using ProjectManager.Domain.Entities;
 using ProjectManager.Domain.Interfaces.Repositories;
 using System;
 using System.Collections.Generic;
@@ -12,15 +13,17 @@ namespace ProjectManager.Application.Services.Access
 {
     public class AccessService : IAccessService
     {
+        private readonly IProjectRepository _projectRepository;
         private readonly IProjectUserRepository _projectUserRepository;
         private readonly ICommentRepository _commentRepository;
         private readonly ILogger<AccessService> _logger;
         public AccessService(IProjectUserRepository projectUserRepository, ILogger<AccessService> logger, 
-            ICommentRepository commentRepository)
+            ICommentRepository commentRepository, IProjectRepository projectRepository)
         {
             _logger = logger;
             _commentRepository = commentRepository;
             _projectUserRepository = projectUserRepository;
+            _projectRepository = projectRepository;
         }
 
         public async Task EnsureUserIsCommentAuthorAsync(string userId, int commentId)
@@ -41,6 +44,13 @@ namespace ProjectManager.Application.Services.Access
         }
         public async Task EnsureUserHasAccessAsync(int projectId, string userId)
         {
+            var project = await _projectRepository.GetByProjectIdAsync(projectId);
+
+            if (project.Visibility == ProjectVisibility.Public)
+            {
+                return;
+            }
+
             var exists = await _projectUserRepository.ExistsAsync(projectId, userId);
 
             if (!exists)
@@ -70,6 +80,17 @@ namespace ProjectManager.Application.Services.Access
 
             _logger.LogWarning("User {UserId} does not have required role in project {ProjectId}", userId, projectId);
             throw new ForbiddenException($"User does not have permission for this action.");
+        }
+
+        public async Task EnsureUserIsProjectOwnerAsync(int projectId, string userId)
+        {
+            var project = await _projectRepository.GetByProjectIdAsync(projectId);
+
+            if (project.OwnerId != userId)
+            {
+                _logger.LogWarning("User {UserId} is not the owner of project {ProjectId}", userId, projectId);
+                throw new ForbiddenException("User is not the owner of this project.");
+            }
         }
     }
 }

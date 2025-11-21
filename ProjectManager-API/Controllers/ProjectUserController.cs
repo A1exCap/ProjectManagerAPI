@@ -41,7 +41,7 @@ namespace ProjectManager_API.Controllers
             var result = await _mediator.Send(new GetAllUsersByProjectIdQuery(projectId, userId, queryParams));
 
             _logger.LogInformation("Request completed: Retrieved {Count} users by projectId: {ProjectId}", result.Items.Count(), projectId);
-            return Ok(ApiResponseFactory.Success(result));
+            return Ok(ApiResponseFactory.Success(result, "Project users retrieved successfully"));
         }
 
         [HttpPost]
@@ -53,7 +53,7 @@ namespace ProjectManager_API.Controllers
             var projectUserId = await _mediator.Send(new CreateProjectUserCommand(projectId, userId, dto));
 
             _logger.LogInformation("Request completed: User added to project successfully, user id: {UserId}, project id: {ProjectId}", dto.UserToAddId, projectId);
-            return Ok(ApiResponseFactory.Created(projectUserId));
+            return Ok(ApiResponseFactory.Created(projectUserId, "User added to project successfully"));
         }
 
         [HttpPatch("{userId}")]

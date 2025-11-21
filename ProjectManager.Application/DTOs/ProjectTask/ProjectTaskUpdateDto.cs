@@ -20,6 +20,7 @@ namespace ProjectManager.Application.DTOs.ProjectTask
         public DateTime? DueDate { get; set; }
         public int EstimatedHours { get; set; }
         public string? Tags { get; set; }
+        [EmailAddress]
         public string? AssigneeEmail { get; set; }
     }
 }

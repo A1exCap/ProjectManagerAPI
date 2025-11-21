@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ProjectManager.Application.DTOs.ProjectUser
 {
-    public class AddUserToProjectDto
+    public record AddUserToProjectDto
     {
         [Required]
         public string UserToAddId { get; set; } = string.Empty;

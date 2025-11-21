@@ -36,7 +36,7 @@ namespace ProjectManager.Application.Features.ProjectUsers.Commands.CreateProjec
             _logger.LogInformation("Handling CreateProjectUserCommand with userId: {UserId}, projectId: {ProjectId}", request.dto.UserToAddId, request.ProjectId);
 
             await _entityValidationService.EnsureProjectExistsAsync(request.ProjectId);
-            await _accessService.EnsureUserHasRoleAsync(request.ProjectId, request.UserId, ["Manager", "Role"]);
+            await _accessService.EnsureUserHasRoleAsync(request.ProjectId, request.UserId, ["Manager"]);
 
             var userRole = _entityValidationService.EnsureRoleIsValid(request.dto.UserRole);
 

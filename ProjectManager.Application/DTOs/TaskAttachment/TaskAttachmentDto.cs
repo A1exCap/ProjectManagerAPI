@@ -8,11 +8,13 @@ using System.Threading.Tasks;
 
 namespace ProjectManager.Application.DTOs.TaskDocument
 {
-    public class TaskAttachmentDto
+    public record TaskAttachmentDto
     {
         [Required]
         public string FileName { get; set; } = string.Empty;
+        [Required]
         public string ContentType { get; set; } = string.Empty;
+        [Required]
         public long FileSize { get; set; }
         public DateTime UploadedAt { get; set; } = DateTime.UtcNow;
     }

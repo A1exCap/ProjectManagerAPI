@@ -36,7 +36,6 @@ namespace ProjectManager.Application.Features.Comments.Commands.UpdateCommentCom
             await _entityValidationService.EnsureProjectExistsAsync(request.ProjectId);
             await _entityValidationService.EnsureTaskBelongsToProjectAsync(request.TaskId, request.ProjectId);
             await _entityValidationService.EnsureCommentBelongsToTaskAsync(request.CommentId, request.TaskId);
-            await _accessService.EnsureUserHasAccessAsync(request.ProjectId, request.UserId);
             await _accessService.EnsureUserIsCommentAuthorAsync(request.UserId, request.CommentId);
 
             var comment = await _commentRepository.GetByIdAsync(request.CommentId);

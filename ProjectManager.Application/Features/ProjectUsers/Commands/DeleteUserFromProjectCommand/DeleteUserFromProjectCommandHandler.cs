@@ -32,7 +32,7 @@ namespace ProjectManager.Application.Features.ProjectUsers.Commands.DeleteUserFr
         }
         public async Task<Unit> Handle(DeleteUserFromProjectCommand request, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Handling DeleteUserFromProjectCommand by user id: {CommentId} and project id: {ProjectId}", request.UserId, request.ProjectId);
+            _logger.LogInformation("Handling DeleteUserFromProjectCommand by user id: {UserId} and project id: {ProjectId}", request.UserId, request.ProjectId);
 
             await _entityValidationService.EnsureProjectExistsAsync(request.ProjectId);
             await _entityValidationService.EnsureUserIsProjectMemberAsync(request.ProjectId, request.UserId);

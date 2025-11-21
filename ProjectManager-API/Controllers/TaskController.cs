@@ -117,7 +117,7 @@ namespace ProjectManager_API.Controllers
 
             await _mediator.Send(new DeleteTaskCommand(projectId,taskId, userId));
 
-            _logger.LogInformation("Request completed: Task deleted with taskId: {TaskId}", taskId);
+            _logger.LogInformation("Request completed: Task deleted by taskId: {TaskId}", taskId);
             return Ok(ApiResponseFactory.NoContent());
         }
     }

@@ -1,0 +1,13 @@
+﻿using MediatR;
+using ProjectManager.Application.DTOs.Project;
+using ProjectManager.Application.DTOs.ProjectTask;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ProjectManager.Application.Features.Projects.Commands.CreateProjectCommand
+{
+    public record CreateProjectCommand(string UserId, CreateProjectDto dto) : IRequest<int>;
+}

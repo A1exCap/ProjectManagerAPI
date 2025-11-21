@@ -36,7 +36,6 @@ namespace ProjectManager.Domain.Entities
     public enum ProjectVisibility
     {
         Public,
-        Private,
-        TeamOnly
+        Private
     }
 }

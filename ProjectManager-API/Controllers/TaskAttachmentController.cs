@@ -37,7 +37,7 @@ namespace ProjectManager_API.Controllers
             var result = await _mediator.Send(new GetAllAttachmentsByTaskIdQuery(projectId, userId, taskId, queryParams));
 
             _logger.LogInformation("Request completed: Retrieved {Count} attachments by taskId: {TaskId}", result.Items.Count(), taskId);
-            return Ok(ApiResponseFactory.Success(result));
+            return Ok(ApiResponseFactory.Success(result, "Attachments retrieved successfully"));
         }
 
         [HttpPost]
@@ -49,7 +49,7 @@ namespace ProjectManager_API.Controllers
             var attachmentId = await _mediator.Send(new UploadAttachmentCommand(taskId, file, userId, projectId));
 
             _logger.LogInformation("Request completed: File uploaded successfully, file id: {AttachmentId}", attachmentId);
-            return Ok(ApiResponseFactory.Created(attachmentId));
+            return Ok(ApiResponseFactory.Created(attachmentId, "Attachment created succesfully"));
         }
 
         [HttpGet("{attachmentId}/download")]

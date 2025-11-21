@@ -11,5 +11,6 @@ namespace ProjectManager.Application.Services.Access
         Task EnsureUserIsCommentAuthorAsync(string userId, int commentId);
         Task EnsureUserHasAccessAsync(int projectId, string userId);
         Task<bool> EnsureUserHasRoleAsync(int projectId, string userId, string[] allowedRoles);
+        Task EnsureUserIsProjectOwnerAsync(int projectId, string userId);
     }
 }

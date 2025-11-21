@@ -20,15 +20,15 @@ namespace ProjectManager.Application.Features.Comments.Queries.GetAllCommentsByT
     public class GetAllCommentsByTaskIdQueryHandler : IRequestHandler<GetAllCommentsByTaskIdQuery, PagedResult<CommentDto>>
     {
         private readonly ILogger<GetAllCommentsByTaskIdQueryHandler> _logger;
-        private readonly IAccessService _accessService;
         private readonly ICommentRepository _commentRepository;
         private readonly IEntityValidationService _entityValidationService;
-        public GetAllCommentsByTaskIdQueryHandler(ILogger<GetAllCommentsByTaskIdQueryHandler> logger, IAccessService accessService, 
-            ICommentRepository commentRepository, IEntityValidationService entityValidationService)
+        private readonly IAccessService _accessService;
+        public GetAllCommentsByTaskIdQueryHandler(ILogger<GetAllCommentsByTaskIdQueryHandler> logger,ICommentRepository commentRepository, 
+            IEntityValidationService entityValidationService, IAccessService accessService)
         {
             _entityValidationService = entityValidationService;
-            _accessService = accessService;
             _logger = logger;
+            _accessService = accessService;
             _commentRepository = commentRepository;
         }
         public async Task<PagedResult<CommentDto>> Handle(GetAllCommentsByTaskIdQuery request, CancellationToken cancellationToken)
@@ -36,8 +36,8 @@ namespace ProjectManager.Application.Features.Comments.Queries.GetAllCommentsByT
             _logger.LogInformation("Handling GetAllCommentsByTaskIdQuery by taskId: {TaskId}", request.TaskId);
 
             await _entityValidationService.EnsureProjectExistsAsync(request.ProjectId);
-            await _entityValidationService.EnsureTaskBelongsToProjectAsync(request.TaskId, request.ProjectId);
-            await _accessService.EnsureUserHasAccessAsync(request.ProjectId, request.UserId);   
+            await _entityValidationService.EnsureTaskBelongsToProjectAsync(request.TaskId, request.ProjectId);  
+            await _accessService.EnsureUserHasAccessAsync(request.ProjectId, request.UserId);
 
             var query = _commentRepository.GetAllCommentsByTaskId(request.TaskId);
 
