@@ -4,9 +4,11 @@ using Microsoft.Extensions.Logging;
 using ProjectManager.Application.Common.Interfaces;
 using ProjectManager.Application.Exceptions;
 using ProjectManager.Application.Services.Access;
+using ProjectManager.Application.Services.CreateMessage;
 using ProjectManager.Application.Services.Validation;
 using ProjectManager.Domain.Entities;
 using ProjectManager.Domain.Interfaces.Repositories;
+using System.Runtime.CompilerServices;
 
 namespace ProjectManager.Application.Features.Tasks.Commands.CreateTask
 {
@@ -16,12 +18,15 @@ namespace ProjectManager.Application.Features.Tasks.Commands.CreateTask
         private readonly IAccessService _accessService;
         private readonly IProjectTaskRepository _taskRepository;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly ICreateMessageService _messageService;
         private readonly IEntityValidationService _entityValidationService;
         private readonly UserManager<User> _userManager;
 
         public CreateTaskCommandHandler(IProjectTaskRepository taskRepository, IUnitOfWork unitOfWork, UserManager<User> userManager, 
-            IAccessService accessService, ILogger<CreateTaskCommandHandler> logger, IEntityValidationService entityValidationService)
+            IAccessService accessService, ILogger<CreateTaskCommandHandler> logger, IEntityValidationService entityValidationService,
+            ICreateMessageService messageMessage)
         {
+            _messageService = messageMessage;
             _entityValidationService = entityValidationService;
             _logger = logger;
             _accessService = accessService;
@@ -57,10 +62,12 @@ namespace ProjectManager.Application.Features.Tasks.Commands.CreateTask
                 EstimatedHours = request.dto.EstimatedHours,
                 Tags = request.dto.Tags,
                 ProjectId = request.ProjectId,
-                AssigneeId = assignee?.Id
+                AssigneeId = assignee?.Id,
+                CreatorId = request.UserId,
             };
 
             await _taskRepository.AddTaskAsync(task);
+            await _messageService.CreateAsync(assignee?.Id, NotificationType.TaskAssigned, $"You have been assigned to task: {task.Title}", RelatedEntityType.ProjectTask, task.Id);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             _logger.LogInformation("Created task with ID {TaskId} with projectId: {ProjectId}", task.Id, request.ProjectId);

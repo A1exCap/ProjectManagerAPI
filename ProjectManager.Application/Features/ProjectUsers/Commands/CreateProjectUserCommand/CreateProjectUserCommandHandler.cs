@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using ProjectManager.Application.Common.Interfaces;
 using ProjectManager.Application.Features.Comments.Commands.CreateCommentCommand;
 using ProjectManager.Application.Services.Access;
+using ProjectManager.Application.Services.CreateMessage;
 using ProjectManager.Application.Services.Validation;
 using ProjectManager.Domain.Entities;
 using ProjectManager.Domain.Interfaces.Repositories;
@@ -20,11 +21,13 @@ namespace ProjectManager.Application.Features.ProjectUsers.Commands.CreateProjec
         private readonly ILogger<CreateCommentCommandHandler> _logger;
         private readonly IEntityValidationService _entityValidationService;
         private readonly IAccessService _accessService;
+        private readonly ICreateMessageService _messageService;
         private readonly IProjectUserRepository _projectUserRepository;
         private readonly IUnitOfWork _unitOfWork;
         public CreateProjectUserCommandHandler(ILogger<CreateCommentCommandHandler> logger, IEntityValidationService entityValidationService, 
-            IAccessService accessService, IProjectUserRepository projectUserRepository, IUnitOfWork unitOfWork)
+            IAccessService accessService, IProjectUserRepository projectUserRepository, IUnitOfWork unitOfWork, ICreateMessageService messageService)
         {
+            _messageService = messageService;
             _logger = logger;
             _projectUserRepository = projectUserRepository;
             _accessService = accessService;
@@ -48,6 +51,7 @@ namespace ProjectManager.Application.Features.ProjectUsers.Commands.CreateProjec
             };
 
             await _projectUserRepository.AddProjectUserAsync(projectUser);
+            await _messageService.CreateAsync(request.dto.UserToAddId, NotificationType.ProjectInvite, $"You have been added to project ID {request.ProjectId} with role {request.dto.UserRole}.", RelatedEntityType.Project, request.ProjectId);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             _logger.LogInformation("Created projectUser with ID: {ProjectUserId}", projectUser.Id);

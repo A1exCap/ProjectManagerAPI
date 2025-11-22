@@ -15,15 +15,14 @@ namespace ProjectManager.Domain.Entities
         public string Title { get; set; } = string.Empty;
         public RelatedEntityType EntityType { get; set; }
         public int RelatedEntityId { get; set; }
-        public bool IsRead { get; set; } = false;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
     public enum NotificationType
     {
         TaskAssigned,
-        TaskCompleted,
+        TaskCompleted,  
         ProjectInvite,
-        DeadlineReminder,
+        DeadlineReminder, // доробити
         NewComment,
         ProjectRoleChanged
     }

@@ -12,7 +12,7 @@ using ProjectManager.Infrastructure.Persistence;
 namespace ProjectManager.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251107135337_init")]
+    [Migration("20251122142456_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -188,14 +188,14 @@ namespace ProjectManager.Infrastructure.Migrations
                     b.Property<bool?>("Edited")
                         .HasColumnType("bit");
 
-                    b.Property<int>("ProjectTaskId")
+                    b.Property<int>("TaskId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("AuthorId");
 
-                    b.HasIndex("ProjectTaskId");
+                    b.HasIndex("TaskId");
 
                     b.ToTable("Comments");
                 });
@@ -207,11 +207,6 @@ namespace ProjectManager.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -248,7 +243,7 @@ namespace ProjectManager.Infrastructure.Migrations
 
                     b.HasIndex("UserId", "IsRead");
 
-                    b.ToTable("Notifications");
+                    b.ToTable("Messages");
                 });
 
             modelBuilder.Entity("ProjectManager.Domain.Entities.Project", b =>
@@ -334,6 +329,10 @@ namespace ProjectManager.Infrastructure.Migrations
                     b.Property<int>("ProjectId")
                         .HasColumnType("int");
 
+                    b.Property<string>("StoredFileName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("UploadedAt")
                         .HasColumnType("datetime2");
 
@@ -365,8 +364,14 @@ namespace ProjectManager.Infrastructure.Migrations
                     b.Property<string>("AssigneeId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<DateTime?>("CompletedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatorId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Description")
                         .HasMaxLength(2000)
@@ -388,6 +393,9 @@ namespace ProjectManager.Infrastructure.Migrations
                     b.Property<int>("ProjectId")
                         .HasColumnType("int");
 
+                    b.Property<DateTime?>("ReminderSentAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasMaxLength(20)
@@ -405,6 +413,8 @@ namespace ProjectManager.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AssigneeId");
+
+                    b.HasIndex("CreatorId");
 
                     b.HasIndex("ProjectId", "Priority", "Status");
 
@@ -450,7 +460,7 @@ namespace ProjectManager.Infrastructure.Migrations
                     b.ToTable("ProjectUser");
                 });
 
-            modelBuilder.Entity("ProjectManager.Domain.Entities.TaskDocument", b =>
+            modelBuilder.Entity("ProjectManager.Domain.Entities.TaskAttachment", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -475,11 +485,6 @@ namespace ProjectManager.Infrastructure.Migrations
 
                     b.Property<long>("FileSize")
                         .HasColumnType("bigint");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
 
                     b.Property<int>("ProjectTaskId")
                         .HasColumnType("int");
@@ -635,7 +640,7 @@ namespace ProjectManager.Infrastructure.Migrations
 
                     b.HasOne("ProjectManager.Domain.Entities.ProjectTask", "ProjectTask")
                         .WithMany("Comments")
-                        .HasForeignKey("ProjectTaskId")
+                        .HasForeignKey("TaskId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -686,7 +691,11 @@ namespace ProjectManager.Infrastructure.Migrations
                 {
                     b.HasOne("ProjectManager.Domain.Entities.User", "Assignee")
                         .WithMany("AssignedTasks")
-                        .HasForeignKey("AssigneeId")
+                        .HasForeignKey("AssigneeId");
+
+                    b.HasOne("ProjectManager.Domain.Entities.User", "Creator")
+                        .WithMany("CreatedTasks")
+                        .HasForeignKey("CreatorId")
                         .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("ProjectManager.Domain.Entities.Project", "Project")
@@ -696,6 +705,8 @@ namespace ProjectManager.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Assignee");
+
+                    b.Navigation("Creator");
 
                     b.Navigation("Project");
                 });
@@ -718,7 +729,7 @@ namespace ProjectManager.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("ProjectManager.Domain.Entities.TaskDocument", b =>
+            modelBuilder.Entity("ProjectManager.Domain.Entities.TaskAttachment", b =>
                 {
                     b.HasOne("ProjectManager.Domain.Entities.ProjectTask", "ProjectTask")
                         .WithMany("Attachments")
@@ -757,6 +768,8 @@ namespace ProjectManager.Infrastructure.Migrations
                     b.Navigation("AssignedTasks");
 
                     b.Navigation("Comments");
+
+                    b.Navigation("CreatedTasks");
 
                     b.Navigation("Messages");
 

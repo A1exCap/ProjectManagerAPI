@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using ProjectManager.Application.Common.Interfaces;
 using ProjectManager.Application.Exceptions;
 using ProjectManager.Application.Services.Access;
+using ProjectManager.Application.Services.CreateMessage;
 using ProjectManager.Application.Services.Validation;
 using ProjectManager.Domain.Entities;
 using ProjectManager.Domain.Interfaces.Repositories;
@@ -15,14 +16,17 @@ namespace ProjectManager.Application.Features.Tasks.Commands.MarkTaskCompleted
         private readonly IProjectTaskRepository _projectTaskRepository;
         private readonly ILogger<MarkTaskCompletedCommandHandler> _logger;
         private readonly IEntityValidationService _entityValidationService;
+        private readonly ICreateMessageService _messageService;
         private readonly IAccessService _accessService;
         public MarkTaskCompletedCommandHandler(IUnitOfWork unitOfWork, IEntityValidationService entityValidationService,
-            IProjectTaskRepository projectTaskRepository, ILogger<MarkTaskCompletedCommandHandler> logger, IAccessService accessService)
+            IProjectTaskRepository projectTaskRepository, ILogger<MarkTaskCompletedCommandHandler> logger, IAccessService accessService,
+            ICreateMessageService messageService)
         {
             _entityValidationService = entityValidationService;
             _unitOfWork = unitOfWork;
             _projectTaskRepository = projectTaskRepository;
             _logger = logger;
+            _messageService = messageService;
             _accessService = accessService;
         }
         public async Task<Unit> Handle(MarkTaskCompletedCommand request, CancellationToken cancellationToken)
@@ -39,6 +43,7 @@ namespace ProjectManager.Application.Features.Tasks.Commands.MarkTaskCompleted
             task.CompletedAt = DateTime.UtcNow;
 
             _projectTaskRepository.UpdateTask(task);
+            await _messageService.CreateAsync(task.CreatorId, NotificationType.TaskCompleted, $"Task '{task.Title}' has been marked as completed.", RelatedEntityType.ProjectTask, task.Id);
             await _unitOfWork.SaveChangesAsync();
 
             _logger.LogInformation("Task with ID {TaskId} marked as completed successfully", request.TaskId);

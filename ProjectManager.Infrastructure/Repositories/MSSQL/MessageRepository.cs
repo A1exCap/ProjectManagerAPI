@@ -28,6 +28,12 @@ namespace ProjectManager.Infrastructure.Repositories.MSSQL
             _context.Messages.Remove(message);
         }
 
+        public void DeleteMessagesByUserId(string userId)
+        {
+            var messages = _context.Messages.Where(m => m.UserId == userId);
+            _context.Messages.RemoveRange(messages);
+        }
+
         public async Task<Message?> GetMessageByIdAsync(int messageId)
         {
             return await _context.Messages.Include(m=>m.User).FirstOrDefaultAsync(m=>m.Id==messageId);
@@ -38,11 +44,6 @@ namespace ProjectManager.Infrastructure.Repositories.MSSQL
             return _context.Messages
                .Where(m => m.UserId == userId)
                .AsQueryable();
-        }
-
-        public void UpdateMessage(Message message)
-        {
-            throw new NotImplementedException();
         }
     }
 }

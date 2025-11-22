@@ -9,6 +9,7 @@ namespace ProjectManager.Domain.Interfaces.Repositories
 {
     public interface IProjectTaskRepository
     {
+        IQueryable<ProjectTask> GetTasksWithUpcomingDeadlines(TimeSpan threshold);
         IQueryable<ProjectTask> GetAllTasksByProjectId(int projectId);
         Task<ProjectTask> GetTaskByIdAsync(int taskId);
         Task AddTaskAsync(ProjectTask task);

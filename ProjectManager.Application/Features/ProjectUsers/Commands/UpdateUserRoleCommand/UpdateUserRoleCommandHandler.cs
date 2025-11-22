@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using ProjectManager.Application.Common.Interfaces;
 using ProjectManager.Application.Services.Access;
+using ProjectManager.Application.Services.CreateMessage;
 using ProjectManager.Application.Services.Validation;
 using ProjectManager.Domain.Entities;
 using ProjectManager.Domain.Interfaces.Repositories;
@@ -19,12 +20,15 @@ namespace ProjectManager.Application.Features.ProjectUsers.Commands.UpdateUserRo
         private readonly ILogger<UpdateUserRoleCommandHandler> _logger;
         private readonly IProjectUserRepository _projectUserRepository;
         private readonly IEntityValidationService _entityValidationService;
+        private readonly ICreateMessageService _messageService;
         private readonly IAccessService _accessService;
         private readonly IUnitOfWork _unitOfWork;
 
         public UpdateUserRoleCommandHandler(ILogger<UpdateUserRoleCommandHandler> logger, IAccessService accessService,
-            IEntityValidationService entityValidationService, IProjectUserRepository projectUserRepository, IUnitOfWork unitOfWork)
+            IEntityValidationService entityValidationService, IProjectUserRepository projectUserRepository, IUnitOfWork unitOfWork,
+            ICreateMessageService messageService)
         {
+            _messageService = messageService;
             _projectUserRepository = projectUserRepository;
             _entityValidationService = entityValidationService;
             _accessService = accessService;
@@ -45,6 +49,7 @@ namespace ProjectManager.Application.Features.ProjectUsers.Commands.UpdateUserRo
             projectUser.Role = newRole;
 
             _projectUserRepository.UpdateProjectUser(projectUser);
+            await _messageService.CreateAsync(request.UserId, NotificationType.ProjectRoleChanged, $"Your role in project ID {request.ProjectId} has been changed to {request.NewRole}.", RelatedEntityType.Project, request.ProjectId);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             _logger.LogInformation("User role updated successfully, user id: {UserId}, project id: {ProjectId}", request.UserId, request.ProjectId);

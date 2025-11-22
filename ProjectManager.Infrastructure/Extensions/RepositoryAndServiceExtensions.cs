@@ -1,7 +1,9 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ProjectManager.Application.Common.Interfaces;
+using ProjectManager.Application.Services.DeadlineReminder;
 using ProjectManager.Domain.Interfaces.Repositories;
+using ProjectManager.Infrastructure.Background;
 using ProjectManager.Infrastructure.Persistence;
 using ProjectManager.Infrastructure.Repositories.MSSQL;
 using ProjectManager.Infrastructure.Services;
@@ -27,6 +29,9 @@ namespace ProjectManager.Infrastructure.Extensions
             services.AddScoped<ITaskAttachmentRepository, TaskAttachmentRepository>();        
             services.AddScoped<IProjectDocumentRepository, ProjectDocumentRepository>();
             services.AddScoped<IMessageRepository, MessageRepository>();
+            services.AddScoped<IDeadlineReminderService, DeadlineReminderService>();
+
+            services.AddHostedService<DeadlineReminderHostedService>();
 
             return services;
         }

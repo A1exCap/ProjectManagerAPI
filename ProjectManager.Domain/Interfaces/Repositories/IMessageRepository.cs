@@ -11,8 +11,8 @@ namespace ProjectManager.Domain.Interfaces.Repositories
     {
         Task AddMessageAsync(Message message);
         Task<Message> GetMessageByIdAsync(int messageId);
-        void UpdateMessage(Message message);
         IQueryable<Message> GetMessagesByUserId(string userId);
         Task DeleteMessageByIdAsync(int messageId);
+        void DeleteMessagesByUserId(string userId);
     }
 }

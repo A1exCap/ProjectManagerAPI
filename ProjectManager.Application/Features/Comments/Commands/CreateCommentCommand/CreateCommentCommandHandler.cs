@@ -56,7 +56,7 @@ namespace ProjectManager.Application.Features.Comments.Commands.CreateCommentCom
             var task = await _projectTaskRepository.GetTaskByIdAsync(request.TaskId);
 
             await _commentRepository.AddCommentAsync(comment);
-            await _messageService.CreateAsync(task.AssigneeId, NotificationType.NewComment, $"New comment on task: {task.Title}", RelatedEntityType.Comment, task.Id);
+            await _messageService.CreateAsync(task.AssigneeId, NotificationType.NewComment, $"New comment in task: {task.Title}", RelatedEntityType.Comment, task.Id);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             _logger.LogInformation("Created comment with ID {CommentId} for TaskId: {TaskId}", comment.Id, request.TaskId);

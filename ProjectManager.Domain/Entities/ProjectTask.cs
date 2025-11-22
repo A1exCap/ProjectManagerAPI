@@ -17,12 +17,15 @@ namespace ProjectManager.Domain.Entities
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime? DueDate { get; set; }
         public DateTime? CompletedAt { get; set; }  
+        public DateTime? ReminderSentAt { get; set; }
         public int EstimatedHours { get; set; }
         public int ActualHours { get; set; }
         public string? Tags { get; set; } 
 
         public int ProjectId { get; set; }
         public Project Project { get; set; } = null!;
+        public string? CreatorId { get; set; }
+        public User? Creator { get; set; }
         public string? AssigneeId { get; set; }
         public User? Assignee { get; set; }
         public ICollection<Comment> Comments { get; set; } = new List<Comment>();

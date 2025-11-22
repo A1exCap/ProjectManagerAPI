@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace ProjectManager.Infrastructure.Persistence.Configurations
 {
-    public class ProjectTaskConfiguration : IEntityTypeConfiguration<Domain.Entities.ProjectTask>
+    public class ProjectTaskConfiguration : IEntityTypeConfiguration<ProjectTask>
     {
-        public void Configure(EntityTypeBuilder<Domain.Entities.ProjectTask> builder)
+        public void Configure(EntityTypeBuilder<ProjectTask> builder)
         {
             builder.HasKey(t => t.Id);
 
@@ -45,6 +45,9 @@ namespace ProjectManager.Infrastructure.Persistence.Configurations
             builder.Property(t => t.CompletedAt)
                 .IsRequired(false);
 
+            builder.Property(t => t.ReminderSentAt)
+                .IsRequired(false);
+
             builder.Property(t => t.EstimatedHours)
                 .HasDefaultValue(0);
 
@@ -55,10 +58,15 @@ namespace ProjectManager.Infrastructure.Persistence.Configurations
                 .IsRequired(false)
                 .HasMaxLength(500);
 
+            builder.HasOne(t=>t.Creator)
+                .WithMany(u=>u.CreatedTasks)
+                .HasForeignKey(t=>t.CreatorId)
+                .OnDelete(DeleteBehavior.SetNull);
+
             builder.HasOne(t => t.Assignee)
                 .WithMany(u => u.AssignedTasks)
                 .HasForeignKey(t=>t.AssigneeId)
-                .OnDelete(DeleteBehavior.SetNull);
+                .OnDelete(DeleteBehavior.ClientSetNull);
             
             builder.HasMany(t => t.Comments)
                 .WithOne(c => c.ProjectTask)
@@ -70,7 +78,7 @@ namespace ProjectManager.Infrastructure.Persistence.Configurations
                 .HasForeignKey(a => a.ProjectTaskId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.HasIndex(pu => new { pu.ProjectId, pu.Priority, pu.Status});
+            builder.HasIndex(t => new { t.ProjectId, t.Priority, t.Status});
         }
     }
 }

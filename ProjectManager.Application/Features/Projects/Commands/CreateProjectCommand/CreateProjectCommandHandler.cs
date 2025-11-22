@@ -40,7 +40,7 @@ namespace ProjectManager.Application.Features.Projects.Commands.CreateProjectCom
                 Visibility = request.dto.Visibility,
                 ClientName = request.dto.ClientName,
                 Budget = request.dto.Budget,
-                Technologies = request.dto.Technologies
+                Technologies = request.dto.Technologies,
             };
 
             await _projectRepository.AddProjectAsync(project);

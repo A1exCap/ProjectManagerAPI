@@ -46,6 +46,21 @@ namespace ProjectManager.Infrastructure.Repositories.MSSQL
            .FirstOrDefaultAsync(t => t.Id == taskId);
         }
 
+        public IQueryable<ProjectTask> GetTasksWithUpcomingDeadlines(TimeSpan threshold)
+        {
+            var now = DateTime.UtcNow;
+            var to = now + threshold;
+
+            return _context.ProjectTasks
+                .Where(t =>
+                    t.DueDate != null &&
+                    t.DueDate > now &&
+                    t.DueDate <= to &&
+                    t.ReminderSentAt == null)
+                .Include(t => t.Assignee)
+                .AsQueryable();
+        }
+
         public void UpdateTask(ProjectTask task)
         {
              _context.ProjectTasks.Update(task);

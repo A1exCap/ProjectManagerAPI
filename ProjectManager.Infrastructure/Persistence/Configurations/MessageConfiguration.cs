@@ -36,11 +36,6 @@ namespace ProjectManager.Infrastructure.Persistence.Configurations
                 .IsRequired()
                 .HasConversion<string>()
                 .HasMaxLength(50);
-
-            builder.Property(n => n.IsRead)
-               .IsRequired()
-               .HasDefaultValue(false);
-
             builder.Property(n => n.RelatedEntityId)
                 .IsRequired();
 
@@ -48,7 +43,6 @@ namespace ProjectManager.Infrastructure.Persistence.Configurations
                 .IsRequired();
 
             builder.HasIndex(n => n.UserId);
-            builder.HasIndex(n => new { n.UserId, n.IsRead });
         }
     }
 }
