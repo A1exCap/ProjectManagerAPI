@@ -8,5 +8,5 @@ using System.Threading.Tasks;
 
 namespace ProjectManager.Application.Features.ProjectUsers.Commands.UpdateUserRoleCommand
 {
-    public record UpdateUserRoleCommand(int ProjectId, string CurrentUserId, string UserId, string NewRole) : IRequest<Unit>;
+    public record UpdateProjectUserCommand(int ProjectId, string CurrentUserId, string UserId, string NewRole, decimal HourlyRate) : IRequest<Unit>;
 }

@@ -10,11 +10,12 @@ namespace ProjectManager.Application.DTOs.ProjectUser
     public record ProjectUserDto
     {
         [Required]
-        public string ProjectName { get; set; } = string.Empty;
-        [Required]
         public string? UserName { get; set; } = string.Empty;
         [Required]
         public string Role { get; set; } = string.Empty;
+        [Required]
+        public decimal? HourlyRate { get; set; }
+        [Required]
         public DateTime JoinedAt { get; set; }
     }
 }

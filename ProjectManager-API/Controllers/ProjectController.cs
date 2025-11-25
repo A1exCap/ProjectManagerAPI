@@ -62,7 +62,8 @@ namespace ProjectManager_API.Controllers
         {
             _logger.LogInformation("Getting project details by projectId: {ProjectId}", projectId);
 
-            var result = await _mediator.Send(new GetProjectDetailsByIdQuery(projectId));
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var result = await _mediator.Send(new GetProjectDetailsByIdQuery(projectId, userId));
 
             _logger.LogInformation("Request completed: Project details retrieved by projectId: {ProjectId}", projectId);
             return Ok(ApiResponseFactory.Success(result, "Project details retrieved successfully"));

@@ -26,7 +26,6 @@ namespace ProjectManager.Application.DTOs.Project
         public decimal? Budget { get; set; }
         public string? Technologies { get; set; }
         public string? OwnerId { get; set; }
-        public User? Owner { get; set; }
 
         public ICollection<ProjectTaskDto> Tasks { get; set; } = new List<ProjectTaskDto>();
         public ICollection<ProjectUserDto> ProjectUsers { get; set; } = new List<ProjectUserDto>();

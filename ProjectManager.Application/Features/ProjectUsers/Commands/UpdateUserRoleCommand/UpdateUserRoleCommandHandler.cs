@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace ProjectManager.Application.Features.ProjectUsers.Commands.UpdateUserRoleCommand
 {
-    public class UpdateUserRoleCommandHandler : IRequestHandler<UpdateUserRoleCommand, Unit>
+    public class UpdateUserRoleCommandHandler : IRequestHandler<UpdateProjectUserCommand, Unit>
     {
         private readonly ILogger<UpdateUserRoleCommandHandler> _logger;
         private readonly IProjectUserRepository _projectUserRepository;
@@ -23,10 +23,11 @@ namespace ProjectManager.Application.Features.ProjectUsers.Commands.UpdateUserRo
         private readonly ICreateMessageService _messageService;
         private readonly IAccessService _accessService;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IProjectRepository _projectRepository;
 
         public UpdateUserRoleCommandHandler(ILogger<UpdateUserRoleCommandHandler> logger, IAccessService accessService,
             IEntityValidationService entityValidationService, IProjectUserRepository projectUserRepository, IUnitOfWork unitOfWork,
-            ICreateMessageService messageService)
+            ICreateMessageService messageService, IProjectRepository projectRepository)
         {
             _messageService = messageService;
             _projectUserRepository = projectUserRepository;
@@ -34,8 +35,9 @@ namespace ProjectManager.Application.Features.ProjectUsers.Commands.UpdateUserRo
             _accessService = accessService;
             _unitOfWork = unitOfWork;
             _logger = logger;
+            _projectRepository = projectRepository;
         }
-        public async Task<Unit> Handle(UpdateUserRoleCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(UpdateProjectUserCommand request, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Handling UpdateUserRoleCommand by userId: {UserId} and projectId: {ProjectId}", request.UserId, request.ProjectId);
 
@@ -46,10 +48,13 @@ namespace ProjectManager.Application.Features.ProjectUsers.Commands.UpdateUserRo
             var projectUser = await _projectUserRepository.GetProjectUserdAsync(request.ProjectId, request.UserId);
 
             var newRole = _entityValidationService.EnsureRoleIsValid(request.NewRole);
+            projectUser.HourlyRate = request.HourlyRate;
             projectUser.Role = newRole;
 
+            var project = await _projectRepository.GetByProjectIdAsync(request.ProjectId);
+
             _projectUserRepository.UpdateProjectUser(projectUser);
-            await _messageService.CreateAsync(request.UserId, NotificationType.ProjectRoleChanged, $"Your role in project ID {request.ProjectId} has been changed to {request.NewRole}.", RelatedEntityType.Project, request.ProjectId);
+            await _messageService.CreateAsync(request.UserId, NotificationType.ProjectRoleChanged, $"Your role in project {project.Name} has been changed to {request.NewRole}.", RelatedEntityType.Project, request.ProjectId);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             _logger.LogInformation("User role updated successfully, user id: {UserId}, project id: {ProjectId}", request.UserId, request.ProjectId);

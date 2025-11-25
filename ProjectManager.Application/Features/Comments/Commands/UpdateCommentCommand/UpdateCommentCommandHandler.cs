@@ -40,6 +40,7 @@ namespace ProjectManager.Application.Features.Comments.Commands.UpdateCommentCom
 
             var comment = await _commentRepository.GetByIdAsync(request.CommentId);
             comment.Content = request.dto.Content;
+            comment.Edited = true;
 
             _commentRepository.UpdateComment(comment);
             await _unitOfWork.SaveChangesAsync();

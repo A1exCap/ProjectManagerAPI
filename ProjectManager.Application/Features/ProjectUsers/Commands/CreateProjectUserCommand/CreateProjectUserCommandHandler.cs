@@ -22,10 +22,12 @@ namespace ProjectManager.Application.Features.ProjectUsers.Commands.CreateProjec
         private readonly IEntityValidationService _entityValidationService;
         private readonly IAccessService _accessService;
         private readonly ICreateMessageService _messageService;
+        private readonly IProjectRepository _projectRepository; 
         private readonly IProjectUserRepository _projectUserRepository;
         private readonly IUnitOfWork _unitOfWork;
         public CreateProjectUserCommandHandler(ILogger<CreateCommentCommandHandler> logger, IEntityValidationService entityValidationService, 
-            IAccessService accessService, IProjectUserRepository projectUserRepository, IUnitOfWork unitOfWork, ICreateMessageService messageService)
+            IAccessService accessService, IProjectUserRepository projectUserRepository, IUnitOfWork unitOfWork, ICreateMessageService messageService,
+            IProjectRepository projectRepository)
         {
             _messageService = messageService;
             _logger = logger;
@@ -33,13 +35,14 @@ namespace ProjectManager.Application.Features.ProjectUsers.Commands.CreateProjec
             _accessService = accessService;
             _entityValidationService = entityValidationService;
             _unitOfWork = unitOfWork;
+            _projectRepository = projectRepository;
         }
         public async Task<int> Handle(CreateProjectUserCommand request, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Handling CreateProjectUserCommand with userId: {UserId}, projectId: {ProjectId}", request.dto.UserToAddId, request.ProjectId);
 
             await _entityValidationService.EnsureProjectExistsAsync(request.ProjectId);
-            await _accessService.EnsureUserHasRoleAsync(request.ProjectId, request.UserId, ["Manager"]);
+            await _accessService.EnsureUserHasRoleAsync(request.ProjectId, request.UserId, ["Manager", "Owner"]);
 
             var userRole = _entityValidationService.EnsureRoleIsValid(request.dto.UserRole);
 
@@ -50,8 +53,10 @@ namespace ProjectManager.Application.Features.ProjectUsers.Commands.CreateProjec
                 Role = userRole
             };
 
+            var project = await _projectRepository.GetByProjectIdAsync(request.ProjectId);
+
             await _projectUserRepository.AddProjectUserAsync(projectUser);
-            await _messageService.CreateAsync(request.dto.UserToAddId, NotificationType.ProjectInvite, $"You have been added to project ID {request.ProjectId} with role {request.dto.UserRole}.", RelatedEntityType.Project, request.ProjectId);
+            await _messageService.CreateAsync(request.dto.UserToAddId, NotificationType.ProjectInvite, $"You have been added to project {project.Name} with role {request.dto.UserRole}.", RelatedEntityType.Project, request.ProjectId);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             _logger.LogInformation("Created projectUser with ID: {ProjectUserId}", projectUser.Id);

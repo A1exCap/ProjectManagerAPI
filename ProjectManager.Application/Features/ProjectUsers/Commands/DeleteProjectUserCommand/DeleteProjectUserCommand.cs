@@ -7,5 +7,5 @@ using System.Threading.Tasks;
 
 namespace ProjectManager.Application.Features.ProjectUsers.Commands.DeleteUserFromProjectCommand
 {
-    public record DeleteUserFromProjectCommand(int ProjectId, string UserId, string CurrentUserId) : IRequest<Unit>;
+    public record DeleteProjectUserCommand(int ProjectId, string UserId, string CurrentUserId) : IRequest<Unit>;
 }

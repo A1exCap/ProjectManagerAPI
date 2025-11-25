@@ -40,15 +40,16 @@ namespace ProjectManager.Application.Features.Projects.Commands.CreateProjectCom
                 Visibility = request.dto.Visibility,
                 ClientName = request.dto.ClientName,
                 Budget = request.dto.Budget,
+                OwnerId = request.UserId,
                 Technologies = request.dto.Technologies,
             };
 
             await _projectRepository.AddProjectAsync(project);
-            var createdProject = await _projectRepository.GetByProjectIdAsync(project.Id);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             ProjectUser owner = new ProjectUser
             {
-                ProjectId = createdProject.Id,
+                ProjectId = project.Id,
                 UserId = request.UserId,
                 Role = ProjectUserRole.Owner
             };
@@ -56,8 +57,8 @@ namespace ProjectManager.Application.Features.Projects.Commands.CreateProjectCom
             await _projectUserRepository.AddProjectUserAsync(owner);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            _logger.LogInformation("Created project with ID {ProjectId}", createdProject.Id);
-            return createdProject.Id;
+            _logger.LogInformation("Created project with ID {ProjectId}", project.Id);
+            return project.Id;
         }
     }
 }

@@ -57,13 +57,13 @@ namespace ProjectManager_API.Controllers
         }
 
         [HttpPatch("{userId}")]
-        public async Task<ActionResult<ApiResponse>> UpdateUserRoleInProject(int projectId, string userId, string newRole)
+        public async Task<ActionResult<ApiResponse>> UpdateUserRoleInProject(int projectId, string userId, string newRole, decimal hourlyRate)
         {
             _logger.LogInformation("Updating user role of user with id: {UserId} in project with id {ProjectId}", userId, projectId);
 
             var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            await _mediator.Send(new UpdateUserRoleCommand(projectId, currentUserId, userId, newRole));
+            await _mediator.Send(new UpdateProjectUserCommand(projectId, currentUserId, userId, newRole, hourlyRate));
 
             _logger.LogInformation("Request updated: User role updated in project with id: {ProjectId}, updated user id: {UserToUpdateId}", projectId, userId);
             return Ok(ApiResponseFactory.NoContent());
@@ -75,7 +75,7 @@ namespace ProjectManager_API.Controllers
             _logger.LogInformation("Deleting user from project. userId: {UserId}, projectId: {ProjectId}", userId, projectId);
 
             var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            await _mediator.Send(new DeleteUserFromProjectCommand(projectId, userId, currentUserId));
+            await _mediator.Send(new DeleteProjectUserCommand(projectId, userId, currentUserId));
 
             _logger.LogInformation("Request completed: User deleted seccessfully, userId: {UserId}, projectId: {ProjectId}", userId, projectId);
             return Ok(ApiResponseFactory.NoContent());

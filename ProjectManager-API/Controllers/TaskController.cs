@@ -76,7 +76,7 @@ namespace ProjectManager_API.Controllers
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            await _mediator.Send(new UpdateTaskCommand(projectId,taskId, userId,dto));
+            await _mediator.Send(new UpdateTaskCommand(projectId,taskId, userId, dto));
 
             _logger.LogInformation("Request updated: Task details updated by taskId: {TaskId}", taskId);
             return Ok(ApiResponseFactory.NoContent());

@@ -15,7 +15,7 @@ namespace ProjectManager.Application.Mappers
         {
             return new ProjectUserDto
             {
-                ProjectName = projectUser.Project.Name,
+                HourlyRate = projectUser.HourlyRate,
                 UserName = projectUser.User.UserName,
                 Role = projectUser.Role.ToString(),
                 JoinedAt = projectUser.JoinedAt

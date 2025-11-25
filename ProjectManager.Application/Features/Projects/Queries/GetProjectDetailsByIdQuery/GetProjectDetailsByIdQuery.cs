@@ -10,5 +10,5 @@ using System.Threading.Tasks;
 
 namespace ProjectManager.Application.Features.Projects.Queries.GetProjectDetailsByIdQuery
 {
-    public record GetProjectDetailsByIdQuery(int ProjectId) : IRequest<ProjectDetailsDto>;
+    public record GetProjectDetailsByIdQuery(int ProjectId, string UserId) : IRequest<ProjectDetailsDto>;
 }

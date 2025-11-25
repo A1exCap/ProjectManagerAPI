@@ -40,7 +40,7 @@ namespace ProjectManager_API.Controllers
             return Ok(ApiResponseFactory.Success(result, "Messages retrieved successfully"));
         }
 
-        [HttpDelete]
+        [HttpDelete("delete")]
         public async Task<ActionResult<ApiResponse>> DeleteAllMessages()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -52,7 +52,7 @@ namespace ProjectManager_API.Controllers
             return Ok(ApiResponseFactory.NoContent());
         }
 
-        [HttpDelete("{messageId}")]
+        [HttpDelete("{messageId}/delete")]
         public async Task<ActionResult<ApiResponse>> DeleteMessage(int messageId)
         {
             _logger.LogInformation("Deleting message by messageId: {MessageId}", messageId);

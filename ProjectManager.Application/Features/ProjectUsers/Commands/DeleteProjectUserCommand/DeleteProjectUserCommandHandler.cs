@@ -14,14 +14,14 @@ using System.Threading.Tasks;
 
 namespace ProjectManager.Application.Features.ProjectUsers.Commands.DeleteUserFromProjectCommand
 {
-    public class DeleteUserFromProjectCommandHandler : IRequestHandler<DeleteUserFromProjectCommand, Unit>
+    public class DeleteProjectUserCommandHandler : IRequestHandler<DeleteProjectUserCommand, Unit>
     {
-        private readonly ILogger<DeleteUserFromProjectCommandHandler> _logger;
+        private readonly ILogger<DeleteProjectUserCommandHandler> _logger;
         private readonly IAccessService _accessService;
         private readonly IEntityValidationService _entityValidationService;
         private readonly IProjectUserRepository _projectUserRepository;
         private readonly IUnitOfWork _unitOfWork;
-        public DeleteUserFromProjectCommandHandler(ILogger<DeleteUserFromProjectCommandHandler> logger, IAccessService accessService,
+        public DeleteProjectUserCommandHandler(ILogger<DeleteProjectUserCommandHandler> logger, IAccessService accessService,
             IEntityValidationService entityValidationService, IProjectUserRepository projectUserRepository, IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
@@ -30,7 +30,7 @@ namespace ProjectManager.Application.Features.ProjectUsers.Commands.DeleteUserFr
             _logger = logger;
             _projectUserRepository = projectUserRepository;
         }
-        public async Task<Unit> Handle(DeleteUserFromProjectCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(DeleteProjectUserCommand request, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Handling DeleteUserFromProjectCommand by user id: {UserId} and project id: {ProjectId}", request.UserId, request.ProjectId);
 
