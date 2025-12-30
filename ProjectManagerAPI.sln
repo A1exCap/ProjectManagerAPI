@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36518.9 d17.14
+VisualStudioVersion = 17.14.36518.9
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectManager.API", "ProjectManager-API\ProjectManager.API.csproj", "{10028893-CC1F-43D6-A9F0-161BB9FD6159}"
 EndProject
@@ -10,6 +10,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectManager.Infrastructure", "ProjectManager.Infrastructure\ProjectManager.Infrastructure.csproj", "{1C0835E9-3A09-442A-87A7-4799C7580582}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectManager.Application", "ProjectManager.Application\ProjectManager.Application.csproj", "{D0C0E77D-5C84-47F0-A6E0-E8CCB1207C73}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectManagerAPI.Tests", "ProjectManagerAPI.Tests\ProjectManagerAPI.Tests.csproj", "{7A3D4CC3-E654-4937-97E6-2B204CFBE66E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectManager.IntegrationTests", "ProjectManager.IntegrationTests\ProjectManager.IntegrationTests.csproj", "{8BBC883A-ED8E-4D4C-927C-6415A80A7757}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +37,14 @@ Global
 		{D0C0E77D-5C84-47F0-A6E0-E8CCB1207C73}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D0C0E77D-5C84-47F0-A6E0-E8CCB1207C73}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D0C0E77D-5C84-47F0-A6E0-E8CCB1207C73}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7A3D4CC3-E654-4937-97E6-2B204CFBE66E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A3D4CC3-E654-4937-97E6-2B204CFBE66E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A3D4CC3-E654-4937-97E6-2B204CFBE66E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A3D4CC3-E654-4937-97E6-2B204CFBE66E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8BBC883A-ED8E-4D4C-927C-6415A80A7757}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8BBC883A-ED8E-4D4C-927C-6415A80A7757}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8BBC883A-ED8E-4D4C-927C-6415A80A7757}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8BBC883A-ED8E-4D4C-927C-6415A80A7757}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

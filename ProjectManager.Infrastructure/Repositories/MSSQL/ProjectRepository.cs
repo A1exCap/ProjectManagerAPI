@@ -38,8 +38,7 @@ namespace ProjectManager.Infrastructure.Repositories.MSSQL
         public IQueryable<Project> GetAllProjectsByUserId(string userId)
         {
             return _context.Projects
-                .Where(p => p.ProjectUsers
-                .Any(u => u.UserId == userId))
+                .Where(p => p.OwnerId == userId || p.ProjectUsers.Any(u => u.UserId == userId))
                 .AsQueryable();
         }
 

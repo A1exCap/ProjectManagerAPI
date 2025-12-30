@@ -23,6 +23,7 @@ namespace ProjectManager.Infrastructure.Persistence
         public DbSet<TaskAttachment> TaskAttachments { get; set; }
         public DbSet<ProjectDocument> ProjectDocuments { get; set; } 
         public DbSet<Message> Messages { get; set; }
+        public object ProjectUsers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
