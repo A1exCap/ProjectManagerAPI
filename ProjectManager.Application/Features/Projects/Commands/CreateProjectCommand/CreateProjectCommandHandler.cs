@@ -45,7 +45,6 @@ namespace ProjectManager.Application.Features.Projects.Commands.CreateProjectCom
             };
 
             await _projectRepository.AddProjectAsync(project);
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             ProjectUser owner = new ProjectUser
             {

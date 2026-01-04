@@ -119,7 +119,7 @@ namespace ProjectManagerAPI.Tests.Features.Projects
             //  - після створення Project
             //  - після додавання ProjectUser
             A.CallTo(() => _unitOfWork.SaveChangesAsync(A<CancellationToken>._))
-                .MustHaveHappenedTwiceExactly();
+                .MustHaveHappenedOnceExactly();
         }
     }
 }
