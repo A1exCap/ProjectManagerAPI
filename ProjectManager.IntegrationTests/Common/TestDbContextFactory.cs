@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using ProjectManager.Domain.Entities;
 using ProjectManager.Infrastructure.Persistence;
+using System.Runtime.Intrinsics.X86;
 
 namespace ProjectManager.IntegrationTests.Common
 {
@@ -9,20 +10,25 @@ namespace ProjectManager.IntegrationTests.Common
     {
         public static async Task<ApplicationDbContext> CreateWithDefaultValues()
         {
-            var context = Create(); // ваш існуючий метод
+            var context = Create();
 
-            context.Users.AddRange(
-                 new User { Id = "user-123", UserName = "TestUser1" },
-                 new User { Id = "another-user", UserName = "TestUser2" }
-             );
+            var user1 = new User { Id = "user-123", UserName = "TestUser1" };
+            var user2 = new User { Id = "another-user", UserName = "TestUser2" };
 
-            context.Projects.AddRange(
-                new Project { Name = "Project 1", OwnerId = "user-123", Status = ProjectStatus.Active },
-                new Project { Name = "Project 2", OwnerId = "user-123", Status = ProjectStatus.Completed },
-                new Project { Name = "Project 3", OwnerId = "another-user", Status = ProjectStatus.Active }
+            context.Users.AddRange(user1, user2);
+
+            var project1 = new Project { Name = "Project 1", OwnerId = user1.Id, Status = ProjectStatus.Active };
+            var project2 = new Project { Name = "Project 2", OwnerId = user1.Id, Status = ProjectStatus.Completed };
+            var project3 = new Project { Name = "Project 3", OwnerId = user2.Id, Status = ProjectStatus.Active };
+
+            context.Projects.AddRange(project1, project2, project3);
+
+            context.ProjectUser.AddRange(
+                new ProjectUser { Project = project1, UserId = user1.Id, Role = ProjectUserRole.Owner },
+                new ProjectUser { Project = project1, UserId = user2.Id, Role = ProjectUserRole.Contributor }
             );
-            
-            await context.SaveChangesAsync();
+
+            await context.SaveChangesAsync(); // Тут всі ID згенеруються і зв'яжуться автоматично
 
             return context;
         }

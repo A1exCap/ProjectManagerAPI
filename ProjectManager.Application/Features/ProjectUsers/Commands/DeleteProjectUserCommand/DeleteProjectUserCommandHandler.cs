@@ -38,7 +38,7 @@ namespace ProjectManager.Application.Features.ProjectUsers.Commands.DeleteUserFr
             await _entityValidationService.EnsureUserIsProjectMemberAsync(request.ProjectId, request.UserId);
             await _accessService.EnsureUserHasRoleAsync(request.ProjectId, request.CurrentUserId, ["Manager", "Owner"]);
 
-            var projectUser = await _projectUserRepository.GetProjectUserdAsync(request.ProjectId, request.UserId);
+            var projectUser = await _projectUserRepository.GetProjectUserIdAsync(request.ProjectId, request.UserId);
 
             _projectUserRepository.DeleteProjectUser(projectUser);
             await _unitOfWork.SaveChangesAsync(cancellationToken);

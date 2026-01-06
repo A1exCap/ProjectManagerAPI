@@ -18,14 +18,14 @@ namespace ProjectManager.Application.Features.ProjectUsers.Commands.CreateProjec
 {
     public class CreateProjectUserCommandHandler : IRequestHandler<CreateProjectUserCommand, int>
     {
-        private readonly ILogger<CreateCommentCommandHandler> _logger;
+        private readonly ILogger<CreateProjectUserCommandHandler> _logger;
         private readonly IEntityValidationService _entityValidationService;
         private readonly IAccessService _accessService;
         private readonly ICreateMessageService _messageService;
         private readonly IProjectRepository _projectRepository; 
         private readonly IProjectUserRepository _projectUserRepository;
         private readonly IUnitOfWork _unitOfWork;
-        public CreateProjectUserCommandHandler(ILogger<CreateCommentCommandHandler> logger, IEntityValidationService entityValidationService, 
+        public CreateProjectUserCommandHandler(ILogger<CreateProjectUserCommandHandler> logger, IEntityValidationService entityValidationService, 
             IAccessService accessService, IProjectUserRepository projectUserRepository, IUnitOfWork unitOfWork, ICreateMessageService messageService,
             IProjectRepository projectRepository)
         {

@@ -24,7 +24,7 @@ namespace ProjectManager.Application.Features.Tasks.Queries.GetTaskByIdQuery
         }
         public async Task<ProjectTaskDetailsDto> Handle(GetTaskByIdQuery request, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Handling GetTaskByIdQuery by tsak Id: {TaskId}", request.TaskId);
+            _logger.LogInformation("Handling GetTaskByIdQuery by task Id: {TaskId}", request.TaskId);
 
             await _entityValidationService.EnsureProjectExistsAsync(request.ProjectId);
             await _entityValidationService.EnsureTaskBelongsToProjectAsync(request.TaskId, request.ProjectId);

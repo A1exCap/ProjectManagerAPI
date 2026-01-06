@@ -40,7 +40,7 @@ namespace ProjectManager.Infrastructure.Repositories.MSSQL
                 .AsQueryable();
         }
 
-        public async Task<ProjectUser?> GetProjectUserdAsync(int projectId, string userId)
+        public async Task<ProjectUser?> GetProjectUserIdAsync(int projectId, string userId)
         {
             return await _context.ProjectUser
                 .Where(pu => pu.ProjectId == projectId && pu.UserId == userId)
