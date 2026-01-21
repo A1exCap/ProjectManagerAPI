@@ -35,7 +35,7 @@ namespace ProjectManager.Application.Features.ProjectDocuments.Queries.GetAllDoc
 
             var totalCount = await query.CountAsync(cancellationToken);
 
-            var documents = await query.OrderBy(d => d.UploadedAt)
+            var documents = await query.OrderByDescending(d => d.UploadedAt)
               .Skip((request.QueryParams.PageNumber - 1) * request.QueryParams.PageSize)
               .Take(request.QueryParams.PageSize)
               .ToListAsync(cancellationToken);

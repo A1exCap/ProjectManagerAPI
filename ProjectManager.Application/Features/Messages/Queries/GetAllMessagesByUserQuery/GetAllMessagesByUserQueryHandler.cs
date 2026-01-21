@@ -32,7 +32,7 @@ namespace ProjectManager.Application.Features.Messages.Queries.GetAllMessagesByU
 
             var totalCount = await query.CountAsync(cancellationToken);
 
-            var messages = await query.OrderBy(m => m.CreatedAt)
+            var messages = await query.OrderByDescending(m => m.CreatedAt)
                 .Skip((request.QueryParams.PageNumber - 1) * request.QueryParams.PageSize)
                 .Take(request.QueryParams.PageSize)
                 .ToListAsync(cancellationToken);

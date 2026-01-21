@@ -135,7 +135,7 @@ namespace ProjectManagerAPI.Tests.Features.Tasks
             A.CallTo(() => _userManager.FindByEmailAsync(nonExistentEmail)).MustHaveHappenedOnceExactly();
             A.CallTo(() => _projectTaskRepository.UpdateTask(A<ProjectTask>._))
                 .MustNotHaveHappened(); 
-            A.CallTo(() => _unitOfWork.SaveChangesAsync(A<CancellationToken>._))
+            A.CallTo(() => _unitOfWork.SaveChangesAsync(CancellationToken.None))
                 .MustNotHaveHappened();
         }
     }

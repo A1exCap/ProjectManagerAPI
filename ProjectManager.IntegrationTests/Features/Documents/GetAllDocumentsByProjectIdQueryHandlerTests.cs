@@ -123,7 +123,7 @@ namespace ProjectManager.IntegrationTests.Features.Documents
             result.TotalCount.Should().Be(3); // 3 документи в цьому проекті
             result.Items.Should().HaveCount(2); // 2 документи на сторінці
 
-            result.Items.First().Name.Should().Be("Oldest Doc");
+            result.Items.First().Name.Should().Be("Newest Doc");
             result.Items.Last().Name.Should().Be("Middle Doc");
         }
     }

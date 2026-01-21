@@ -59,7 +59,7 @@ namespace ProjectManagerAPI.Tests.Features.Projects
               .MustHaveHappenedOnceExactly()
               .Then(A.CallTo(() => _accessService.EnsureUserIsProjectOwnerAsync(projectId, userId)).MustHaveHappenedOnceExactly())
               .Then(A.CallTo(() => _projectRepository.DeleteProjectAsync(projectId)).MustHaveHappenedOnceExactly())
-              .Then(A.CallTo(() => _unitOfWork.SaveChangesAsync(A<CancellationToken>._)).MustHaveHappenedOnceExactly());     
+              .Then(A.CallTo(() => _unitOfWork.SaveChangesAsync(CancellationToken.None)).MustHaveHappenedOnceExactly());     
         }
     }
 }

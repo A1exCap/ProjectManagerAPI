@@ -134,7 +134,7 @@ namespace ProjectManagerAPI.Tests.Features.Tasks
                 .WithMessage($"User with email '{nonExistentEmail}' not found.");
 
             // --------------------
-            // ASSERT SIDE EFFECTS (Дуже важливо!)
+            // ASSERT SIDE EFFECTS 
             // --------------------
 
             A.CallTo(() => _entityValidationService.EnsureProjectExistsAsync(projectId))
@@ -145,7 +145,7 @@ namespace ProjectManagerAPI.Tests.Features.Tasks
                 .MustNotHaveHappened();
             A.CallTo(() => _messageService.CreateAsync(A<string>._, A<NotificationType>._, A<string>._, A<RelatedEntityType>._, A<int>._))
                 .MustNotHaveHappened();
-            A.CallTo(() => _unitOfWork.SaveChangesAsync(A<CancellationToken>._))
+            A.CallTo(() => _unitOfWork.SaveChangesAsync(CancellationToken.None))
                 .MustNotHaveHappened();
         }
 

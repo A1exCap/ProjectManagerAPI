@@ -69,7 +69,7 @@ namespace ProjectManagerAPI.Tests.Features.Documents
             A.CallTo(() => _projectDocumentRepository.GetDocumentByIdAsync(documentId))
                 .Returns(fakeDocument);
 
-            A.CallTo(() => _blobStorage.DownloadFileAsync("project-documents", fakeDocument.StoredFileName, A<CancellationToken>._))
+            A.CallTo(() => _blobStorage.DownloadFileAsync("project-documents", fakeDocument.StoredFileName, CancellationToken.None))
                 .Returns(fakeStream);
 
             var query = new DownloadDocumentByIdQuery(projectId, documentId, userId);
@@ -82,14 +82,15 @@ namespace ProjectManagerAPI.Tests.Features.Documents
 
             result.Should().NotBeNull();
             result.FileName.Should().Be("MyReport.pdf");
-            result.ContentType.Should().Be("application/pdf"); 
+            result.ContentType.Should().Be("application/pdf");
+            result.FileContent.Should().BeEquivalentTo(fileBytes);
 
             A.CallTo(() => _entityValidationService.EnsureProjectExistsAsync(projectId))
               .MustHaveHappenedOnceExactly()
               .Then(A.CallTo(() => _accessService.EnsureUserHasAccessAsync(projectId, userId)).MustHaveHappenedOnceExactly())
               .Then(A.CallTo(() => _entityValidationService.EnsureDocumentBelongsToProjectAsync(documentId, projectId)).MustHaveHappenedOnceExactly())
               .Then(A.CallTo(() => _projectDocumentRepository.GetDocumentByIdAsync(documentId)).MustHaveHappenedOnceExactly())
-              .Then(A.CallTo(() => _blobStorage.DownloadFileAsync("project-documents", "guid-123.pdf", A<CancellationToken>._)).MustHaveHappenedOnceExactly());
+              .Then(A.CallTo(() => _blobStorage.DownloadFileAsync("project-documents", "guid-123.pdf", CancellationToken.None)).MustHaveHappenedOnceExactly());
         }
     }
 }

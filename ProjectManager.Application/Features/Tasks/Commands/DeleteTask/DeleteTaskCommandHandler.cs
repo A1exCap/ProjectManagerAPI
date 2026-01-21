@@ -33,7 +33,7 @@ namespace ProjectManager.Application.Features.Tasks.Commands.DeleteTask
             await _accessService.EnsureUserHasRoleAsync(request.ProjectId, request.UserId, ["Owner", "Manager"]);
 
             await _projectTaskRepository.DeleteTaskByIdAsync(request.TaskId);
-            await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             _logger.LogInformation("Task with id:{TaskId} deleted Succesfully", request.TaskId);
 

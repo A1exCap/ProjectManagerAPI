@@ -40,7 +40,7 @@ namespace ProjectManager.Application.Features.Tasks.Commands.MarkTaskStarted
             task.Status = ProjectTaskStatus.InProgress;
 
             _projectTaskRepository.UpdateTask(task);
-            await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             _logger.LogInformation("Task with ID {TaskId} marked as started successfully", request.TaskId);
 

@@ -44,7 +44,7 @@ namespace ProjectManager.Application.Features.Tasks.Commands.MarkTaskCompleted
 
             _projectTaskRepository.UpdateTask(task);
             await _messageService.CreateAsync(task.CreatorId, NotificationType.TaskCompleted, $"Task '{task.Title}' has been marked as completed.", RelatedEntityType.ProjectTask, task.Id);
-            await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             _logger.LogInformation("Task with ID {TaskId} marked as completed successfully", request.TaskId);
 

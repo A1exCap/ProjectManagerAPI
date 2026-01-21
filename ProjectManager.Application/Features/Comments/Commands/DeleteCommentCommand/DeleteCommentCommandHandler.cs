@@ -38,9 +38,9 @@ namespace ProjectManager.Application.Features.Comments.Commands.DeleteCommentCom
             await _accessService.EnsureUserIsCommentAuthorAsync(request.UserId, request.CommentId);
           
             await _commentRepository.DeleteCommentByIdAsync(request.CommentId);
-            await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            _logger.LogInformation("Task with id:{TaskId} deleted Succesfully", request.TaskId);
+            _logger.LogInformation("Comment with id:{CommentId} deleted Successfully", request.CommentId);
 
             return Unit.Value;
         }
