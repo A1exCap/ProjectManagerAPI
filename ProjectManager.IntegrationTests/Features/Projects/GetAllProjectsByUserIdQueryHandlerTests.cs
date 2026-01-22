@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace ProjectManager.IntegrationTests.Features.Projects
 {
-    public class GetAllProjectsByUserIdQueryIntegrationTests
+    public class GetAllProjectsByUserIdQueryHandlerTests
     {
         [Fact]
         public async Task Handle_ShouldReturnPagedProjects_ForUser()
@@ -22,15 +22,7 @@ namespace ProjectManager.IntegrationTests.Features.Projects
             // ARRANGE
             // --------------------
 
-            var context = TestDbContextFactory.Create();
-
-            context.Projects.AddRange(
-                new Project { Name = "Project 1", OwnerId = "user-123", Status = ProjectStatus.Active },
-                new Project { Name = "Project 2", OwnerId = "user-123", Status = ProjectStatus.Completed },
-                new Project { Name = "Project 3", OwnerId = "another-user", Status = ProjectStatus.Active }
-            );
-
-            await context.SaveChangesAsync();
+            using var context = await TestDbContextFactory.CreateWithDefaultValues();
 
             var repository = new ProjectRepository(context);
             var logger = NullLogger<GetAllProjectsByUserIdQueryHandler>.Instance;

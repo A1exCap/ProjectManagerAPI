@@ -13,14 +13,14 @@ using System.Threading.Tasks;
 
 namespace ProjectManager.IntegrationTests.Features.Projects
 {
-    public class GetAllPublicProjectsByNameQueryHandlerIntegrationTests
+    public class GetAllPublicProjectsByNameQueryHandlerTests
     {
         [Fact]
         public async Task Handle_ShouldReturnPagedProjects_ByName()
         {
             // Arrange
 
-            var context = TestDbContextFactory.Create();
+            using var context = TestDbContextFactory.Create();
 
             context.Projects.AddRange(
                 new Project { Name = "Public Project Alpha", Visibility = ProjectVisibility.Public, Status = ProjectStatus.Active },
@@ -51,9 +51,13 @@ namespace ProjectManager.IntegrationTests.Features.Projects
 
             result.Should().NotBeNull();
             result.TotalCount.Should().Be(2);
-            result.Items.Should().HaveCount(2);
-
             result.Items.Should().OnlyContain(p => p.Visibility == ProjectVisibility.Public);
+
+            var items = result.Items.ToList();
+            items[0].Name.Should().Be("Public Project Alpha"); 
+            items[1].Name.Should().Be("Public Project Beta");  
+
+            result.Items.Should().NotContain(p => p.Name.Contains("Gamma"));
         }
     }
 }

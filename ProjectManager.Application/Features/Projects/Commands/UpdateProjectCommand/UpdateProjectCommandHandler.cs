@@ -48,7 +48,7 @@ namespace ProjectManager.Application.Features.Projects.Commands.UpdateProjectCom
             project.Technologies = request.Dto.Technologies;
 
             _projectRepository.UpdateProject(project);
-            await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             _logger.LogInformation("Project with ID {ProjectId} updated successfully", request.ProjectId);
 

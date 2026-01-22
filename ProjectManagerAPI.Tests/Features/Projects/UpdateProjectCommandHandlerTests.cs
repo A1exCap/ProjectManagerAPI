@@ -50,12 +50,6 @@ namespace ProjectManagerAPI.Tests.Features.Projects
             {
                 Name = "Updated Project",
                 Description = "Updated Description",
-                EndDate = DateTime.UtcNow.AddDays(60),
-                Status = ProjectStatus.Completed,
-                Visibility = ProjectVisibility.Public,
-                ClientName = "Updated Client",
-                Budget = 2000,
-                Technologies = "Java; Spring"
             };
 
             var command = new UpdateProjectCommand(projectId, userId, dto);
@@ -73,30 +67,14 @@ namespace ProjectManagerAPI.Tests.Features.Projects
             await _handler.Handle(command, CancellationToken.None);
 
             // ASSERT 
-            project.Name.Should().Be(dto.Name);
-            project.Description.Should().Be(dto.Description);
-            project.EndDate.Should().Be(dto.EndDate);
-            project.Status.Should().Be(dto.Status);
-            project.Visibility.Should().Be(dto.Visibility);
-            project.ClientName.Should().Be(dto.ClientName);
-            project.Budget.Should().Be(dto.Budget);
-            project.Technologies.Should().Be(dto.Technologies);
+            project.Should().BeEquivalentTo(dto);
 
-            // ASSERT —
             A.CallTo(() => _entityValidationService.EnsureProjectExistsAsync(projectId))
-                .MustHaveHappenedOnceExactly();
-
-            A.CallTo(() => _accessService.EnsureUserIsProjectOwnerAsync(projectId, userId))
-                .MustHaveHappenedOnceExactly();
-
-            A.CallTo(() => _projectRepository.GetByProjectIdAsync(projectId))
-                .MustHaveHappenedOnceExactly();
-
-            A.CallTo(() => _projectRepository.UpdateProject(project))
-                .MustHaveHappenedOnceExactly();
-
-            A.CallTo(() => _unitOfWork.SaveChangesAsync(A<CancellationToken>._))
-                .MustHaveHappenedOnceExactly();
+                .MustHaveHappenedOnceExactly()
+                .Then(A.CallTo(() => _accessService.EnsureUserIsProjectOwnerAsync(projectId, userId)).MustHaveHappenedOnceExactly())
+                .Then(A.CallTo(() => _projectRepository.GetByProjectIdAsync(projectId)).MustHaveHappenedOnceExactly())
+                .Then(A.CallTo(() => _projectRepository.UpdateProject(project)).MustHaveHappenedOnceExactly())
+                .Then(A.CallTo(() => _unitOfWork.SaveChangesAsync(CancellationToken.None)).MustHaveHappenedOnceExactly());
         }
     }
 }

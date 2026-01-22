@@ -43,7 +43,7 @@ namespace ProjectManager.Application.Features.Comments.Commands.UpdateCommentCom
             comment.Edited = true;
 
             _commentRepository.UpdateComment(comment);
-            await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             _logger.LogInformation("Comment with ID {CommentId} updated successfully", request.CommentId);
             return Unit.Value;

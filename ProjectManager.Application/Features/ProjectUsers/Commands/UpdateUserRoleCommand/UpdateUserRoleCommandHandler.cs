@@ -45,7 +45,7 @@ namespace ProjectManager.Application.Features.ProjectUsers.Commands.UpdateUserRo
             await _entityValidationService.EnsureProjectExistsAsync(request.ProjectId);
             await _entityValidationService.EnsureUserIsProjectMemberAsync(request.ProjectId, request.UserId);
 
-            var projectUser = await _projectUserRepository.GetProjectUserdAsync(request.ProjectId, request.UserId);
+            var projectUser = await _projectUserRepository.GetProjectUserIdAsync(request.ProjectId, request.UserId);
 
             var newRole = _entityValidationService.EnsureRoleIsValid(request.NewRole);
             projectUser.HourlyRate = request.HourlyRate;

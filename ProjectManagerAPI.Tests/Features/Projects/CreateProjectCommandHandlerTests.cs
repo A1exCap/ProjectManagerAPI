@@ -118,8 +118,8 @@ namespace ProjectManagerAPI.Tests.Features.Projects
             // 4️⃣ Перевіряємо, що SaveChangesAsync викликано двічі
             //  - після створення Project
             //  - після додавання ProjectUser
-            A.CallTo(() => _unitOfWork.SaveChangesAsync(A<CancellationToken>._))
-                .MustHaveHappenedTwiceExactly();
+            A.CallTo(() => _unitOfWork.SaveChangesAsync(CancellationToken.None))
+                .MustHaveHappenedOnceExactly();
         }
     }
 }

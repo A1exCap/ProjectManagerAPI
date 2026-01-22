@@ -54,17 +54,12 @@ namespace ProjectManagerAPI.Tests.Features.Projects
             // Act
             await _handler.Handle(command, CancellationToken.None);
             // Assert
+
             A.CallTo(() => _entityValidationService.EnsureProjectExistsAsync(projectId))
-                .MustHaveHappenedOnceExactly();
-
-            A.CallTo(() => _accessService.EnsureUserIsProjectOwnerAsync(projectId, userId))
-                .MustHaveHappenedOnceExactly();
-
-            A.CallTo(() => _projectRepository.DeleteProjectAsync(projectId))
-                .MustHaveHappenedOnceExactly();
-
-            A.CallTo(() => _unitOfWork.SaveChangesAsync(A<CancellationToken>._))
-                .MustHaveHappenedOnceExactly();
+              .MustHaveHappenedOnceExactly()
+              .Then(A.CallTo(() => _accessService.EnsureUserIsProjectOwnerAsync(projectId, userId)).MustHaveHappenedOnceExactly())
+              .Then(A.CallTo(() => _projectRepository.DeleteProjectAsync(projectId)).MustHaveHappenedOnceExactly())
+              .Then(A.CallTo(() => _unitOfWork.SaveChangesAsync(CancellationToken.None)).MustHaveHappenedOnceExactly());     
         }
     }
 }

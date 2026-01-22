@@ -38,7 +38,7 @@ namespace ProjectManager.Application.Features.TaskAttachments.Queries.GetAllAtta
 
             var totalCount = await query.CountAsync(cancellationToken);
 
-            var attachments = await query.OrderBy(a => a.UploadedAt)
+            var attachments = await query.OrderByDescending(a => a.UploadedAt)
               .Skip((request.QueryParams.PageNumber - 1) * request.QueryParams.PageSize)
               .Take(request.QueryParams.PageSize)
               .ToListAsync(cancellationToken);

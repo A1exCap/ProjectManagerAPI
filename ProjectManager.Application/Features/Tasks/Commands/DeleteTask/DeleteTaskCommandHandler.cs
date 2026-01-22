@@ -32,10 +32,8 @@ namespace ProjectManager.Application.Features.Tasks.Commands.DeleteTask
             await _entityValidationService.EnsureTaskBelongsToProjectAsync(request.TaskId, request.ProjectId);
             await _accessService.EnsureUserHasRoleAsync(request.ProjectId, request.UserId, ["Owner", "Manager"]);
 
-            var task = await _projectTaskRepository.GetTaskByIdAsync(request.TaskId);
-
-            await _projectTaskRepository.DeleteTaskByIdAsync(task.Id);
-            await _unitOfWork.SaveChangesAsync();
+            await _projectTaskRepository.DeleteTaskByIdAsync(request.TaskId);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             _logger.LogInformation("Task with id:{TaskId} deleted Succesfully", request.TaskId);
 

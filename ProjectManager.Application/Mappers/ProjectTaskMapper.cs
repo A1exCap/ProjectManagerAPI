@@ -1,6 +1,7 @@
 ﻿using ProjectManager.Application.DTOs.Comment;
 using ProjectManager.Application.DTOs.ProjectTask;
 using ProjectManager.Application.DTOs.Task;
+using ProjectManager.Application.DTOs.TaskDocument;
 using ProjectManager.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -35,9 +36,9 @@ namespace ProjectManager.Application.Mappers
                 EstimatedHours = task.EstimatedHours,
                 ActualHours = task.ActualHours,
                 Tags = task.Tags,
-                AssigneeName = task.Assignee.UserName,
-                Comments = task.Comments.Select(CommentMapper.ToDto).ToList(),
-                Attachments = task.Attachments.Select(TaskAttachmentMapper.ToDto).ToList()
+                AssigneeName = task.Assignee?.UserName,
+                Comments = task.Comments != null ? task.Comments.Select(CommentMapper.ToDto).ToList() : new List<CommentDto>(),
+                Attachments = task.Attachments != null ? task.Attachments.Select(TaskAttachmentMapper.ToDto).ToList() : new List<TaskAttachmentDto>()
             };
         }
     }

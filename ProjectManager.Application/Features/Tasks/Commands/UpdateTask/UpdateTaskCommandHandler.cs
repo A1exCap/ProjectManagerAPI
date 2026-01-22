@@ -61,7 +61,7 @@ namespace ProjectManager.Application.Features.Tasks.Commands.UpdateTask
             task.AssigneeId = assignee?.Id;
 
             _projectTaskRepository.UpdateTask(task);
-            await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             _logger.LogInformation("Task with ID {TaskId} updated successfully", request.TaskId);
 

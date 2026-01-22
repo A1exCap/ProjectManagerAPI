@@ -13,7 +13,7 @@ namespace ProjectManager.Domain.Interfaces.Repositories
         Task AddProjectUserAsync(ProjectUser projectUser);
         IQueryable<ProjectUser> GetAllUsersByProjectId(int projectId);
         void UpdateProjectUser(ProjectUser projectUser);
-        Task<ProjectUser> GetProjectUserdAsync(int projectId, string userId);
+        Task<ProjectUser> GetProjectUserIdAsync(int projectId, string userId);
         Task<string> GetUserRoleAsync(int projectId, string userId);
         Task<bool> ExistsAsync(int pojectId, string userId);
     }
